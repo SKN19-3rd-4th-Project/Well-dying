@@ -8,3 +8,10 @@ venv/
 .venv/
 env/
 ENV/
+
+# macOS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
