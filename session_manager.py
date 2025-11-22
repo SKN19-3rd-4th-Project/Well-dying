@@ -1,5 +1,3 @@
-# session_manager.py
-# 세션 저장/로드 및 사용자별 세션 이력 관리
 
 import os
 import json
