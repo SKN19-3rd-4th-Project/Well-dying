@@ -1,5 +1,8 @@
 import uuid
-from rag_chatbot_langgraph import chat
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'chatbot')))
+from src.chatbot import chat
 
 def test_memory():
     thread_id = str(uuid.uuid4())

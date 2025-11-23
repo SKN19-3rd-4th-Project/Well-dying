@@ -1,5 +1,8 @@
 import unittest
-from preprocess_pdfs import chunk_simple, chunk_law
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'chatbot')))
+from src.preprocessing import chunk_law, chunk_simple
 
 class TestChunking(unittest.TestCase):
     def test_chunk_simple_overlap(self):

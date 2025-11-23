@@ -17,16 +17,16 @@ import time
 load_dotenv()
 
 # === 설정 ===
-BASE_DIR = Path(__file__).parent
-PROCESSED_DIR = BASE_DIR / "processed"
-DB_DIR = BASE_DIR / "chroma_db"
+# 설정
+processed_dir = "data/processed"
+chroma_db_dir = "data/chroma_db"
 
 # OpenAI 클라이언트 초기화
 openai_client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 # ChromaDB 클라이언트 초기화
 chroma_client = chromadb.PersistentClient(
-    path=str(DB_DIR),
+    path=chroma_db_dir,
     settings=Settings(anonymized_telemetry=False)
 )
 
@@ -34,7 +34,12 @@ chroma_client = chromadb.PersistentClient(
 collection_name = "well_dying_legacy_data"
 try:
     collection = chroma_client.get_collection(name=collection_name)
-    print(f"기존 컬렉션 '{collection_name}' 사용")
+    print(f"기존 컬렉션 '{collection_name}' 삭제 후 재생성")
+    chroma_client.delete_collection(name=collection_name)
+    collection = chroma_client.create_collection(
+        name=collection_name,
+        metadata={"description": "Well Dying 유산상속 관련 데이터"}
+    )
 except:
     collection = chroma_client.create_collection(
         name=collection_name,
@@ -69,26 +74,36 @@ def index_jsonl_file(jsonl_path: Path):
             
             data = json.loads(line)
             
-            # 텍스트와 메타데이터 추출
-            text = data.get('text', '')
-            if not text or len(text.strip()) < 20:
+            # 스키마 적응 (Unified Data vs Legacy Data)
+            if 'context' in data and 'metadata' in data:
+                # Unified Schema
+                context = data.get('context', '')
+                instruction = data.get('instruction', '')
+                meta = data.get('metadata', {})
+                
+                # 텍스트 구성: Instruction과 Context를 결합하여 검색 품질 향상
+                text = f"주제: {instruction}\n내용: {context}"
+                
+                doc_id = f"{meta.get('category', 'unknown')}_{len(ids)}"
+                
+                metadata = {
+                    'title': instruction, # Instruction을 제목으로 사용
+                    'source': meta.get('source_file', 'unknown'),
+                    'category': meta.get('category', 'unknown'),
+                    'file_type': meta.get('file_type', 'unknown')
+                }
+            else:
+                # Legacy Schema (Fallback)
+                text = data.get('text', '')
+                doc_id = data.get('id', str(len(ids)))
+                metadata = {
+                    'title': data.get('title', ''),
+                    'source': data.get('source', ''),
+                    'category': data.get('category', ''),
+                }
+
+            if not text or len(text.strip()) < 10:
                 continue
-            
-            # ID와 메타데이터 준비
-            doc_id = data.get('id', '')
-            metadata = {
-                'title': data.get('title', ''),
-                'source': data.get('source', ''),
-                'category': data.get('category', ''),
-            }
-            
-            # 선택적 필드 추가
-            if 'article_id' in data:
-                metadata['article_id'] = data['article_id']
-            if 'article_title' in data:
-                metadata['article_title'] = data['article_title']
-            if 'sub_chunk' in data:
-                metadata['sub_chunk'] = str(data['sub_chunk'])
             
             documents.append(text)
             metadatas.append(metadata)
@@ -138,13 +153,20 @@ def main():
     print("=" * 60)
     
     # DB 디렉토리 생성
-    DB_DIR.mkdir(exist_ok=True)
+    Path(chroma_db_dir).mkdir(parents=True, exist_ok=True)
     
-    # 처리된 JSONL 파일 찾기
-    jsonl_files = sorted(PROCESSED_DIR.glob("*.jsonl"))
+    # 처리된 JSONL 파일 찾기 (Unified Data 우선)
+    target_file = Path(processed_dir) / "unified_well_dying_data.jsonl"
+    
+    if target_file.exists():
+        jsonl_files = [target_file]
+        print(f"통합 데이터 파일 발견: {target_file.name}")
+    else:
+        jsonl_files = sorted(Path(processed_dir).glob("*.jsonl"))
+        print("통합 데이터 파일이 없어 모든 JSONL 파일을 처리합니다.")
     
     if not jsonl_files:
-        print(f"경고: {PROCESSED_DIR}에 JSONL 파일이 없습니다.")
+        print(f"경고: {processed_dir}에 JSONL 파일이 없습니다.")
         return
     
     print(f"\n총 {len(jsonl_files)}개 파일 발견")

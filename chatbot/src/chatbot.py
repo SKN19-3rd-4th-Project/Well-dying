@@ -8,8 +8,7 @@ RAG 기반 유산상속 상담 챗봇 (LangGraph 버전)
 import os
 from pathlib import Path
 from typing import TypedDict, List, Dict, Any
-import chromadb
-from chromadb.config import Settings
+from pinecone import Pinecone
 from openai import OpenAI
 from dotenv import load_dotenv
 from langgraph.graph import StateGraph, END
@@ -48,19 +47,17 @@ embeddings = OpenAIEmbeddings(
     api_key=os.getenv("OPENAI_API_KEY")
 )
 
-# ChromaDB 클라이언트 초기화
-chroma_client = chromadb.PersistentClient(
-    path=str(DB_DIR),
-    settings=Settings(anonymized_telemetry=False)
-)
+# Pinecone 클라이언트 초기화
+pc = Pinecone(api_key=os.getenv("PINECONE_API_KEY"))
+INDEX_NAME = "temp"
+NAMESPACE = "well-dying"
 
-# 컬렉션 가져오기
-collection_name = "well_dying_legacy_data"
 try:
-    collection = chroma_client.get_collection(name=collection_name)
-except:
-    logger.error(f"오류: '{collection_name}' 컬렉션을 찾을 수 없습니다.")
-    logger.error("먼저 'python index_data.py'를 실행하여 데이터를 인덱싱하세요.")
+    index = pc.Index(INDEX_NAME)
+    # 인덱스 상태 확인 (가볍게)
+    index.describe_index_stats()
+except Exception as e:
+    logger.error(f"오류: Pinecone 인덱스 '{INDEX_NAME}'에 접근할 수 없습니다: {e}")
     exit(1)
 
 # === LangGraph State 정의 ===
@@ -78,38 +75,83 @@ class GraphState(TypedDict):
 def search_node(state: GraphState) -> GraphState:
     """문서 검색 노드"""
     query = state["query"]
-    n_results = 5
+    n_results = 15 # 검색 결과 수 증가 (Recall 향상)
     
     # 쿼리 임베딩 생성
     query_embedding = embeddings.embed_query(query)
     
     # 벡터 검색
-    results = collection.query(
-        query_embeddings=[query_embedding],
-        n_results=n_results,
-        include=['documents', 'metadatas', 'distances']
-    )
-    
-    # 결과 정리
-    relevant_docs = []
-    if results['documents'] and len(results['documents'][0]) > 0:
-        for i, (doc, metadata, distance) in enumerate(zip(
-            results['documents'][0],
-            results['metadatas'][0],
-            results['distances'][0]
-        )):
+    # 벡터 검색 (Pinecone)
+    try:
+        results = index.query(
+            vector=query_embedding,
+            top_k=n_results,
+            include_metadata=True,
+            namespace=NAMESPACE
+        )
+        
+        # 결과 정리
+        relevant_docs = []
+        for match in results['matches']:
+            # 메타데이터에서 텍스트 추출 (Pinecone은 텍스트를 메타데이터에 저장함)
+            metadata = match['metadata']
+            text = metadata.get('text', '')
+            score = match['score']
+            
             relevant_docs.append({
-                'text': doc,
+                'text': text,
                 'metadata': metadata,
-                'distance': distance,
-                'rank': i + 1
+                'score': score
             })
+            
+    except Exception as e:
+        logger.error(f"Pinecone 검색 오류: {e}")
+        relevant_docs = []
     
     return {
         **state,
         "relevant_docs": relevant_docs,
         "num_sources": len(relevant_docs)
     }
+
+def rewrite_node(state: GraphState) -> GraphState:
+    """사용자 질문을 검색에 최적화된 형태로 재작성하는 노드"""
+    query = state["query"]
+    logger.info(f"Original query: {query}")
+    
+    # 질문 재작성 프롬프트
+    system_prompt = """당신은 사용자의 질문을 검색 엔진에 최적화된 쿼리로 변환하는 AI 어시스턴트입니다.
+    사용자의 질문이 모호하거나 일반적인 경우, 이를 구체적이고 검색 가능한 키워드로 확장하세요.
+    특히 '전화', '문의', '콜센터', '어디에 물어봐' 등의 표현이 포함된 경우, 다음 키워드들을 반드시 포함하여 검색 확률을 높이세요:
+    - "행정안전부 공공서비스혁신과"
+    - "콜센터 1588-2188"
+    - "정부민원안내콜센터 110"
+    
+    예시:
+    - "유산 관련해서 물어보고싶은데 어디에 전화해?" -> "상속 유산 관련 문의 전화번호 콜센터 행정안전부 공공서비스혁신과 1588-2188 정부민원안내콜센터 110"
+    - "상속세율이 얼마야?" -> "상속세율 상속세 과세표준 세율표"
+    - "마포구 장례식장 알려줘" -> "마포구 장례식장 장례식장 목록 서울특별시 마포구 시설"
+    
+    출력은 오직 재작성된 쿼리만 포함해야 합니다."""
+    
+    messages = [
+        SystemMessage(content=system_prompt),
+        HumanMessage(content=query)
+    ]
+    
+    try:
+        response = llm.invoke(messages)
+        new_query = response.content.strip()
+        logger.info(f"Rewritten query: {new_query}")
+    except Exception as e:
+        logger.error(f"Query rewrite failed: {e}")
+        new_query = query # 실패 시 원래 쿼리 사용
+        
+    return {
+        **state,
+        "query": new_query
+    }
+
 
 def format_context_node(state: GraphState) -> GraphState:
     """컨텍스트 포맷팅 노드"""
@@ -149,7 +191,8 @@ def generate_node(state: GraphState) -> GraphState:
     query = state["query"]
     context = state["context"]
     
-    system_prompt = """당신은 'well-dying(존엄한 삶의 마무리)'을 주제로 사용자에게 정보와 정서적 안정감을 제공하는 챗봇입니다.
+    system_prompt = """당신은 'Well Dying(웰다잉)'을 주제로 사용자에게 유산상속, 장례절차, 정부지원금, 디지털 유산 등 포괄적인 정보를 제공하는 챗봇입니다.
+    제공된 문서를 바탕으로 정확하고 친절하게 답변하세요.
 사용자의 질문에 대해 제공된 법률 문서와 안내 자료를 바탕으로 정확하고 친절하게 답변해주세요.
 
 [핵심 원칙]
@@ -234,12 +277,14 @@ def create_rag_graph():
     workflow = StateGraph(GraphState)
     
     # 노드 추가
+    workflow.add_node("rewrite", rewrite_node)
     workflow.add_node("search", search_node)
     workflow.add_node("format_context", format_context_node)
     workflow.add_node("generate", generate_node)
     
     # 엣지 추가
-    workflow.set_entry_point("search")
+    workflow.set_entry_point("rewrite")
+    workflow.add_edge("rewrite", "search")
     workflow.add_edge("search", "format_context")
     workflow.add_edge("format_context", "generate")
     workflow.add_edge("generate", END)

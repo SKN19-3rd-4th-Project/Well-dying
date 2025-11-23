@@ -185,6 +185,9 @@ def clean_chunk_text(text: str) -> str:
     # 예: "및제" → "및 제", "및증" → "및 증"
     text = re.sub(r'및([가-힣])', r'및 \1', text)
     
+    # 설정
+    source_dir = "data/raw"
+    output_dir = "data/processed"
     # 연속된 공백 정리 (3개 이상 → 2개)
     text = re.sub(r' {3,}', '  ', text)
     
