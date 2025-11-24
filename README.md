@@ -11,17 +11,17 @@
 ## 📚 목차
 
 1. [팀 소개](#%EF%B8%8F-%ED%8C%80-%EC%86%8C%EA%B0%9C)
-2. 프로젝트 개요
-3. 기술 스택 & 사용한 모델 (임베딩 모델, LLM)
-4. 시스템 아키텍처
-5. WBS
-6. 요구사항 명세서
-7. 수집한 데이터 및 전처리 요약
-8. DB 연동 구현 코드 (링크첨부)
-9. 테스트 계획 및 결과 보고서
-10. 진행 과정 중 프로그램 개선 노력
-11. 수행결과(시연 페이지)
-12. 한 줄 회고
+2. [프로젝트 개요](#-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-%EA%B0%9C%EC%9A%94)
+3. [기술 스택 & 사용한 모델](#-%EA%B8%B0%EC%88%A0-%EC%8A%A4%ED%83%9D--%EC%82%AC%EC%9A%A9%ED%95%9C-%EB%AA%A8%EB%8D%B8)
+4. [시스템 아키텍처](#%EC%8B%9C%EC%8A%A4%ED%85%9C-%EC%95%84%ED%82%A4%ED%85%8D%EC%B2%98)
+5. [WBS](#-wbs)
+6. [요구사항 명세서](#%EF%B8%8F%E2%83%A3-%EC%9A%94%EA%B5%AC%EC%82%AC%ED%95%AD-%EB%AA%85%EC%84%B8%EC%84%9C)
+7. [수집한 데이터 및 전처리 요약](#%EF%B8%8F-%EC%88%98%EC%A7%91%ED%95%9C-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EB%B0%8F-%EC%A0%84%EC%B2%98%EB%A6%AC-%EC%9A%94%EC%95%BD)
+8. [DB 연동 구현 코드](#db-%EC%97%B0%EB%8F%99-%EA%B5%AC%ED%98%84-%EC%BD%94%EB%93%9C)
+9. [테스트 계획 및 결과 보고서](#-%ED%85%8C%EC%8A%A4%ED%8A%B8-%EA%B3%84%ED%9A%8D-%EB%B0%8F-%EA%B2%B0%EA%B3%BC-%EB%B3%B4%EA%B3%A0%EC%84%9C)
+10. [트러블 슈팅](#-%ED%8A%B8%EB%9F%AC%EB%B8%94%EC%8A%88%ED%8C%85)
+11. [수행결과(시연 페이지)](#-%EC%88%98%ED%96%89%EA%B2%B0%EA%B3%BC%EC%8B%9C%EC%97%B0-%ED%8E%98%EC%9D%B4%EC%A7%80)
+12. [한 줄 회고](#%EF%B8%8F-%ED%95%9C-%EC%A4%84-%ED%9A%8C%EA%B3%A0)
 
 <br>
 
@@ -139,7 +139,7 @@ Shukatsu 개념 정리(위키피디아) [](https://en.wikipedia.org/wiki/Shukats
 
 ## 🪢시스템 아키텍처
 
-### 📋 프로젝트 구조
+### 프로젝트 구조
 
 ```
 .
@@ -199,7 +199,7 @@ Shukatsu 개념 정리(위키피디아) [](https://en.wikipedia.org/wiki/Shukats
 
 ---
 
-## 📖 수집한 데이터 및 전처리 요약
+## 🗃️ 수집한 데이터 및 전처리 요약
 
 ### 수집한 데이터 목록
 
@@ -373,143 +373,7 @@ https://www.data.go.kr/data/15122366/openapi.do
 
 ---
 
-## 🔄 전체 워크플로우
-
-### 1. 데이터 준비 단계
-
-```mermaid
-graph LR
-    A["원본 PDF (data/raw/)"] --> B["preprocess_pdfs.py"]
-    B --> C["처리된 JSONL (data/processed/)"]
-    D["팀원 데이터 (CSV/JSON)"] --> E["merge_data.py"]
-    C --> E
-    E --> F["unified_well_dying_data.jsonl"]
-```
-
-**데이터 카테고리:**
-- **Cyber Legacy** (사이버 유산): 온라인 계정 관리, 디지털 유산
-- **Subsidy** (정부 지원금): 장례 지원금, 상속 관련 혜택
-- **Funeral** (장례 절차): 전국 장례식장, 무덤, 화장터 정보
-- **Persona** (톤앤매너): 대화 규칙, 공감 질문
-
-### 2. 인덱싱 단계
-
-```mermaid
-graph LR
-    A["unified_well_dying_data.jsonl"] --> B["index_to_pinecone.py"]
-    B --> C["OpenAI Embeddings (text-embedding-3-small)"]
-    C --> D["Pinecone Index (temp)"]
-    D --> E["Namespace: well-dying"]
-```
-
-**Pinecone 구조:**
-- **Index Name**: `temp`
-- **Namespace**: `well-dying` (팀원 데이터와 분리)
-- **Dimension**: 1536 (text-embedding-3-small)
-- **Metric**: cosine similarity
-
-### 3. 챗봇 실행 단계 (LangGraph Workflow)
-
-```mermaid
-graph TD
-    A["User Query"] --> B["rewrite_node"]
-    B --> C["search_node"]
-    C --> D["format_context_node"]
-    D --> E["generate_node"]
-    E --> F["Answer"]
-    
-    B -.-> G["GPT-4o mini\n(Query Refinement)"]
-    C -.-> H["Pinecone\n(Vector Search)"]
-    E -.-> I["GPT-4o mini\n(Answer Generation)"]
-```
-
-**LangGraph 노드 설명:**
-1. **rewrite_node**: 사용자 질문을 검색에 최적화된 형태로 재작성
-2. **search_node**: Pinecone에서 유사 문서 검색 (Top 15)
-3. **format_context_node**: 검색된 문서를 컨텍스트로 구성
-4. **generate_node**: 컨텍스트 기반 답변 생성 + 대화 기록 업데이트
-
----
-
-## 🛠️ 기술 스택
-
-### 데이터 처리
-- **PyMuPDF (fitz)**: PDF 텍스트 추출
-- **Pandas**: CSV/JSON 데이터 처리
-- **Python 3.11+**: 주요 프로그래밍 언어
-
-### 벡터 데이터베이스
-- **Pinecone**: 클라우드 벡터 DB (Serverless)
-- **OpenAI Embeddings**: `text-embedding-3-small` 모델 (1536 차원)
-
-### LLM & 챗봇
-- **OpenAI GPT-4o mini**: 답변 생성 및 쿼리 재작성
-- **LangGraph**: 워크플로우 관리 및 상태 관리
-- **LangChain**: LLM 통합 및 체인 구성
-- **MemorySaver**: 대화 기록 유지 (세션별 thread_id)
-
-### 웹 인터페이스
-- **Streamlit**: 웹 UI 프레임워크
-
-### 환경 관리
-- **python-dotenv**: 환경 변수 관리
-
----
-
-## 🚀 시작하기
-
-### 1. 환경 설정
-
-```bash
-# 1. 가상환경 생성 및 활성화
-python -m venv .venv
-source .venv/bin/activate  # Mac/Linux
-# .venv\Scripts\activate  # Windows
-
-# 2. 패키지 설치
-pip install -r requirements.txt
-
-# 3. 환경 변수 설정 (.env 파일 생성)
-echo "OPENAI_API_KEY=your_openai_api_key" > .env
-echo "PINECONE_API_KEY=your_pinecone_api_key" >> .env
-```
-
-### 2. 데이터 준비 (선택사항)
-
-**이미 `unified_well_dying_data.jsonl`이 있다면 이 단계는 건너뛰세요.**
-
-```bash
-# PDF 전처리 (data/raw/ -> data/processed/)
-python chatbot/src/preprocessing.py
-
-# 데이터 통합 (여러 소스 -> unified_well_dying_data.jsonl)
-python scripts/merge_data.py
-```
-
-### 3. Pinecone 인덱싱
-
-```bash
-# Pinecone에 데이터 업로드 (최초 1회 또는 데이터 변경 시)
-python scripts/index_to_pinecone.py
-```
-
-**예상 소요 시간:** 약 10-15분 (2,754개 문서 기준)
-
-### 4. 챗봇 실행
-
-```bash
-# Streamlit 앱 실행
-streamlit run chatbot/app.py
-
-# 또는 포트 지정
-streamlit run chatbot/app.py --server.port 8503
-```
-
-브라우저에서 `http://localhost:8501` (또는 지정한 포트) 접속
-
----
-
-## 💡 사용 예시
+## 💡 테스트 계획 및 결과 보고서
 
 ### 질문 예시
 
@@ -521,13 +385,9 @@ streamlit run chatbot/app.py --server.port 8503
    - "마포구 장례식장 알려줘"
    - "화장 절차는 어떻게 되나요?"
 
-3. **정부 지원금**
-   - "장례비 지원금은 얼마야?"
-   - "유족에게 지급되는 지원금이 있나요?"
-
-4. **디지털 유산**
-   - "카카오톡 계정 탈퇴 방법 알려줘"
-   - "구글 계정 추모 프로필은 뭐야?"
+3. **감성 대화 관련**
+   - "오늘 따라 기운이 없네. 재밌는 이야기라도 들려줄래?"
+   - "집에만 오래 있었더니 더 우울해져서 뭐라도 하고 싶은데 추천해줄만한게 있을까?"
 
 ### 대화 기록 유지
 
@@ -536,9 +396,7 @@ streamlit run chatbot/app.py --server.port 8503
 - **새 탭/브라우저**: 새로운 세션으로 시작
 - **기록 초기화**: 사이드바의 "🗑️ 대화 기록 지우기" 버튼 클릭
 
----
-
-## 🧪 테스트
+### 테스트
 
 ```bash
 # 대화 기록 테스트
@@ -553,65 +411,6 @@ python tests/test_general.py
 # 전처리 로직 테스트
 python tests/test_preprocessing.py
 ```
-
----
-
-## 📊 데이터 통계
-
-- **총 문서 수**: 2,754개
-- **카테고리 분포**:
-  - Cyber Legacy: ~500개
-  - Subsidy: ~1,200개
-  - Funeral: ~1,000개
-  - Persona: ~50개 (중복 제거 후)
-- **평균 문서 길이**: ~300자
-- **인덱싱 성공률**: 99.96% (1개 초과 길이 오류)
-
----
-
-## ⚙️ 설정 및 튜닝
-
-### 검색 파라미터 (`chatbot/src/chatbot.py`)
-
-```python
-# 검색 결과 수 (Recall vs. 응답 속도 트레이드오프)
-n_results = 15  # 기본값
-
-# Pinecone 설정
-INDEX_NAME = "temp"
-NAMESPACE = "well-dying"
-```
-
-### LLM 파라미터
-
-```python
-# GPT-4o mini 설정
-llm = ChatOpenAI(
-    model="gpt-4o-mini",
-    temperature=0.7,      # 창의성 vs. 일관성
-    max_tokens=1000,      # 최대 응답 길이
-)
-```
-
-### 쿼리 재작성 활성화/비활성화
-
-`chatbot/src/chatbot.py`의 LangGraph 워크플로우에서 `rewrite_node`를 제거하면 쿼리 재작성 없이 직접 검색합니다.
-
----
-
-## 🔒 보안 및 환경 변수
-
-**`.env` 파일 예시:**
-
-```bash
-OPENAI_API_KEY=sk-proj-...
-PINECONE_API_KEY=pcsk_...
-```
-
-**주의사항:**
-- `.env` 파일은 `.gitignore`에 포함되어 있습니다.
-- API Key는 절대 공개 저장소에 커밋하지 마세요.
-- Production 환경에서는 환경 변수 관리 시스템 사용 권장.
 
 ---
 
@@ -654,36 +453,11 @@ Rate limit reached for requests
 **해결:**  
 프롬프트 템플릿을 재설계하고 시스템 메시지·지시문을 세분화한 뒤, 여러 유형의 질문으로 반복 검증하여 모델이 의도한 데이터 기반 응답을 안정적으로 생성하도록 해결
 
----
-
-## 📚 참고 자료
-
-### 데이터 출처
-- **법률 문서**: 민법 상속편, 상속세 및 증여세법
-- **세금 안내**: 국세청 상속·증여 세금상식 I, II
-- **장례 정보**: 전국 장례식장, 화장터, 묘지 데이터베이스
-- **디지털 유산**: 카카오, 구글, 네이버 계정 관리 가이드
-
-### 관련 문서
-- [RAG_DATA_PREPROCESSING_GUIDE.md](RAG_DATA_PREPROCESSING_GUIDE.md): 데이터 전처리 가이드
-- [LangGraph 공식 문서](https://langchain-ai.github.io/langgraph/)
-- [Pinecone 문서](https://docs.pinecone.io/)
+<br>
 
 ---
 
-## 🤝 기여
-
-이 프로젝트는 Well Dying 팀 프로젝트의 일부입니다.
-
-**팀원 데이터 통합 프로세스:**
-1. `data/processed/` 하위에 카테고리별 폴더 생성 (예: `online_pjh_json/`)
-2. CSV 또는 JSON 데이터 배치
-3. `scripts/merge_data.py` 실행
-4. `scripts/index_to_pinecone.py` 실행
-
----
-
-## 🤖수행결과(시연 페이지)
+## 🤖 수행결과(시연 페이지)
 
 (여기에 챗봇 링크 입력)
 
@@ -691,7 +465,7 @@ Rate limit reached for requests
 
 ---
 
-## ✒️한 줄 회고
+## ✒️ 한 줄 회고
 
 | 이름 | 회고 |
 |----------|-------------|
