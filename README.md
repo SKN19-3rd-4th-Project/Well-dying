@@ -1,7 +1,7 @@
 # SKN19-3rd-3TEAM
 
 > SK네트웍스 Family AI 캠프 19기 3차 프로젝트  
-> 개발기간: 25.11.12 ~ 25.11.25
+> 개발기간: 25.11.12 ~ 25.11.25 <br>
 > 주제 : LLM을 연동한 내외부 문서 기반 질의 응답 시스템
 
 <br>
@@ -32,9 +32,13 @@
 - 팀명 : 맺음
 - 팀원 소개 :
 
+<div align="center">
+	
 | [@배상준](https://github.com/WindyAle) | [@박소희](https://github.com/xxoysauce) | [@이승원](https://github.com/seungwon-sw) | [@김성욱](https://github.com/souluk319) | [@박진형](https://github.com/vispi94) |
 | :----------------------------------------: | :----------------------------------------: | :----------------------------------------: | :----------------------------------------: | :----------------------------------------: |
-| <img src="assets/members/kim.png" width="120"> | <img src="assets/members/lee.png" width="120"> | <img src="assets/members/dain.png" width="120"> | <img src="assets/members/sooyeon.png" width="120"> | <img src="assets/members/ihyun.png" width="120"> |
+| <img src="data/image/BSJ.png" width="120"> | <img src="data/image/PSH.png" width="120"> | <img src="data/image/LSW.png" width="120"> | <img src="data/image/KSU.png" width="120"> | <img src="data/image/PJH.png" width="120"> |
+
+</div>
 
 <br>
 
@@ -103,7 +107,7 @@ Shukatsu 개념 정리(위키피디아) [](https://en.wikipedia.org/wiki/Shukats
 	
 이러한 배경에서 저희는 **신뢰할 수 있는 안내/대화 서비스의 필요성**을 느끼고 도움을 줄 수 있는 챗봇을 구상하게 되었습니다.
 
-#### 4) **프로젝트 목표**
+#### **프로젝트 목표**
 
 1.  **핵심 정보 제공**: 상속·장례·디지털 유산 등 삶의 마무리에 필요한 정보를 정확하게 안내
     
@@ -127,7 +131,7 @@ Shukatsu 개념 정리(위키피디아) [](https://en.wikipedia.org/wiki/Shukats
 | **Embedding Model** | [![text-embedding-3-small](https://img.shields.io/badge/text--embedding--3--small-00A67D?style=for-the-badge&logo=openai&logoColor=white)](https://platform.openai.com/docs/guides/embeddings) |
 | **Vector DB**       | [![Pinecone](https://img.shields.io/badge/Pinecone-0075A8?style=for-the-badge&logo=pinecone&logoColor=white)](https://www.pinecone.io/) |
 | **Orchestration / RAG** | [![LangChain](https://img.shields.io/badge/LangChain-1C3C3C?style=for-the-badge&logo=langchain&logoColor=white)](https://www.langchain.com/) [![LangGraph](https://img.shields.io/badge/LangGraph-000000?style=for-the-badge)](https://langchain-ai.github.io/langgraph/) |
-| **Frontend**        | [![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)](https://streamlit.io/) |
+| **Frontend** | ![React](https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=React&logoColor=black) |
 | **Development Env** | [![VS Code](https://img.shields.io/badge/VS%20Code-007ACC?style=for-the-badge&logo=visualstudiocode&logoColor=white)](https://code.visualstudio.com/) [![Conda](https://img.shields.io/badge/Conda-3EB049?style=for-the-badge&logo=anaconda&logoColor=white)](https://www.anaconda.com/) [![RunPod](https://img.shields.io/badge/RunPod-02A9FF?style=for-the-badge)](https://www.runpod.io/) [![Colab](https://img.shields.io/badge/Colab-F9AB00?style=for-the-badge&logo=googlecolab&logoColor=white)](https://colab.research.google.com/) [![Gemini](https://img.shields.io/badge/Gemini-4285F4?style=for-the-badge&logo=google&logoColor=white)](https://ai.google.dev/)[![GPT-5.1](https://img.shields.io/badge/GPT--5.1-000000?style=for-the-badge&logo=openai&logoColor=white)](https://platform.openai.com/)
 
 
