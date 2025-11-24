@@ -8,7 +8,7 @@
 
 ---
 
-## 📚 목차
+# 📚 목차
 
 1. [팀 소개](#%EF%B8%8F-%ED%8C%80-%EC%86%8C%EA%B0%9C)
 2. [프로젝트 개요](#-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-%EA%B0%9C%EC%9A%94)
@@ -27,9 +27,9 @@
 
 ---
 
-## 🖐️ 팀 소개
+# 🖐️ 팀 소개
 
-- ### 팀명 : **맺음**
+- ## 팀명 : **맺음**
 - ### 팀원 소개 :
 
 <div align="center">
@@ -44,71 +44,77 @@
 
 ---
 
-## 📖 프로젝트 개요
+# 📖 프로젝트 개요
 
-###  주제 : 남은 인생을 후회 없이 잘 살고, 품위 있는 끝맺음을 준비하며, <br> 새로운 삶의 의미를 찾아가는 과정을 돕는 AI 기반의 '대화 상대' 챗봇 서비스
+##  주제 : 남은 인생을 후회 없이 잘 살고, 품위 있는 끝맺음을 준비하며, <br> 새로운 삶의 의미를 찾아가는 과정을 돕는 AI 기반의 '대화 상대' 챗봇 서비스
 
-####  **프로젝트 소개**
+- ###  **프로젝트 소개**
 
 "**라잎클로버**"는 사용자가 남은 삶을 정돈하고 의미를 찾을 수 있도록 돕는 AI 대화형 챗봇 서비스입니다.  
 **상속, 장례 절차, 디지털 유산, 정서 상담 등 다양한 주제를 RAG 기반으로 안내**하며  
 **사용자의 감정·기억까지 반영된 맞춤형 대화를 제공**합니다.
 
-####  **프로젝트 배경**
+- ###  **프로젝트 배경**
 
 "삶의 마무리 과정(상속·장례·연명의료 등)에 대한 정보 수요가 증가하고 있지만,
 궁금한 정보를 다양하게 제공하거나 정서적 부담으로 주변에 쉽게 이야기하기 어려운 고민을 한 곳에서 상담/안내해주는 통합 서비스는 부족합니다."
 
-**현대 사회 이슈**
--   고령화 사회 심화
--   독거노인 + 1인 가구 증가
--   무연고자 사망 증가
+- **현대 사회 이슈**
+   -   고령화 사회 심화
+   -   독거노인 + 1인 가구 증가
+   -   무연고자 사망 증가
 
-<details>
-<summary>관련 기사</summary>
+## 관련 기사
 
 ### ■ 무연고 사망 증가
 
--   2022년 무연고 사망자 **4,842명**.
-    [https://www.newsis.com/view/NISX20250905_0003318050?utm_source=chatgpt.com](https://www.newsis.com/view/NISX20250905_0003318050?utm_source=chatgpt.com)
-    ##### 출처: 뉴시스
-    
--   2030년까지 지속 증가 예측(1인 가구 증가)			[https://www.joongang.co.kr/article/25106349?utm_source=chatgpt.com](https://www.joongang.co.kr/article/25106349?utm_source=chatgpt.com)
-    ##### 출처: 중앙일보
-    
+<img src="data/image/news1.jpg">
 
-### ■ 고독사 증가
+- 무연고 사망자는 년마다 증가하는 추세이며, 통계에 잡히지 않는 불특정 다수도 있어 관심과 대책이 요망됨.
 
--   2022년 고독사 **3,378명**, 5년 사이 30% 증가.
-    [https://www.korea.kr/news/healthView.do?newsId=148912488?utm_source=chatgpt.com](https://www.korea.kr/news/healthView.do?newsId=148912488?utm_source=chatgpt.com)
-    ##### 출처: 보건복지부 리포트
-    
+[https://www.newsis.com/view/NISX20250905_0003318050?utm_source=chatgpt.com](https://www.newsis.com/view/NISX20250905_0003318050?utm_source=chatgpt.com)
+##### 출처: 뉴시스
+
 
 ### ■ 고령화 + 1인 가구
+
+<img src="data/image/news2.png">
 
 -   한국은 2025년 초고령사회 진입.
     
 -   노년층 1인 가구 폭증 → 죽음 준비·장례 절차의 정보 접근성 낮음.    
-    [https://kostat.go.kr/portal/korea/kor_nw/1/1/index.board?bmode=read&aSeq=429567?utm_source=chatgpt.com](https://kostat.go.kr/portal/korea/kor_nw/1/1/index.board?bmode=read&aSeq=429567?utm_source=chatgpt.com)
-	##### 출처: 통계청
+[https://kostat.go.kr/portal/korea/kor_nw/1/1/index.board?bmode=read&aSeq=429567?utm_source=chatgpt.com](https://kostat.go.kr/portal/korea/kor_nw/1/1/index.board?bmode=read&aSeq=429567?utm_source=chatgpt.com)
+##### 출처: 통계청
 
-</details>
-<br>
-<details>
-<summary>해외 죽음 준비 문화 동향</summary>
+## 해외 죽음 준비 문화 동향
 	
 ### ■ 일본의 ‘슈카츠(終活, Shukatsu)’ 확산
 
 -   일본에서는 **자기 죽음을 준비하는 활동 전체**를 가리키는 말로 ‘슈카츠(終活)’가 이미 널리 사용됨. [위키백과](https://en.wikipedia.org/wiki/Shukatsu_%28end-of-life_planning%29?utm_source=chatgpt.com)
--   배경: 초고령사회, 인구 감소, 장례·상속·묘지 관리 부담 증가.
 
-Shukatsu 개념 정리(위키피디아) [](https://en.wikipedia.org/wiki/Shukatsu_(end-of-life_planning))[https://en.wikipedia.org/wiki/Shukatsu_(end-of-life_planning)](https://en.wikipedia.org/wiki/Shukatsu_(end-of-life_planning))
+-   주체적인 삶의 마무리, 남겨진 가족의 부담 경감, 현재 삶의 재발견과 성찰, 물리적 정리를 대비하는 문화<br>
+   Shukatsu 개념 정리(위키피디아) <br>
+   [](https://en.wikipedia.org/wiki/Shukatsu_(end-of-life_planning))[https://en.wikipedia.org/wiki/Shukatsu_(end-of-life_planning)](https://en.wikipedia.org/wiki/Shukatsu_(end-of-life_planning))
 
-</details>
+### ■ 미국 – Legacy AI / Digital Afterlife 시장 등장
+
+- “StoryWorth”: AI 기반 인생 회고 스토리북 생성 서비스 → 미국에서 급성장.
+    
+    출처: StoryWorth 공식
+    
+    https://welcome.storyworth.com/?utm_source=chatgpt.com
+    
+- “HereAfter AI”: AI가 사용자의 생전 음성·이야기를 기록 → 유족이 대화 가능.
+    
+    출처: HereAfter
+    
+    https://www.hereafter.ai/?utm_source=chatgpt.com
+
+<br>
 	
 ### 이러한 배경에서 저희는 **신뢰할 수 있는 안내/대화 서비스의 필요성**을 느끼고 도움을 줄 수 있는 챗봇을 구상하게 되었습니다.
 
-#### **프로젝트 목표**
+- ### **프로젝트 목표**
 
 1.  **핵심 정보 제공**: 상속·장례·디지털 유산 등 삶의 마무리에 필요한 정보를 정확하게 안내
     
@@ -122,7 +128,7 @@ Shukatsu 개념 정리(위키피디아) [](https://en.wikipedia.org/wiki/Shukats
 
 ---
 
-## 💻 기술 스택 & 사용한 모델  
+# 💻 기술 스택 & 사용한 모델  
 
 | 분야                | 사용 도구 |
 |---------------------|-----------|
@@ -142,7 +148,7 @@ Shukatsu 개념 정리(위키피디아) [](https://en.wikipedia.org/wiki/Shukats
 
 ---
 
-## 🪢시스템 아키텍처
+# 🪢시스템 아키텍처
 
 ### 프로젝트 구조
 (추후 marge한 최종 형태로 갱신 예정)
@@ -184,17 +190,17 @@ Shukatsu 개념 정리(위키피디아) [](https://en.wikipedia.org/wiki/Shukats
 
 ---
 
-## 📅 WBS
+# 📅 WBS
 
 (추후 최종 버전으로 갱신)
 
-<img src="data/image/wbs-preview.png">
+<img src="data/image/wbs-preview.png" width="700">
 
 <br>
 
 ---
 
-## *️⃣ 요구사항 명세서
+# *️⃣ 요구사항 명세서
 
 이 서비스는 다음과 같은 정보/기능을 제공합니다.<br>
 (파트별 추가 내용 1줄씩 보완 예정)
@@ -203,7 +209,8 @@ Shukatsu 개념 정리(위키피디아) [](https://en.wikipedia.org/wiki/Shukats
 #### 장례절차 및 장례식장 정보
 - 전국 장례식장 데이터베이스
 #### 디지털 유산 관리 
-- 사이버 개인정보, 계정 관리
+- 사후 사이버 개인정보, 계정 관리에 대한 정보 제공
+- 일부 플랫폼의 사후 처리 기능과 계정 휴면, 탈퇴 절차 및 유의사항 전달
 #### 감성적인 대화 
 - 사용자 기분 상태에 맞는 공감/대화
 
@@ -211,7 +218,7 @@ Shukatsu 개념 정리(위키피디아) [](https://en.wikipedia.org/wiki/Shukats
 
 ---
 
-## 🗃️ 수집한 데이터 및 전처리 요약
+# 🗃️ 수집한 데이터 및 전처리 요약
 
 ### 수집한 데이터 목록
 
@@ -380,7 +387,7 @@ https://www.data.go.kr/data/15122366/openapi.do
 
 ---
 
-## 💾DB 연동 구현 코드
+# 💾DB 연동 구현 코드
 
 - (여기에 DB 연동 구현 코드 링크 입력)
 
@@ -388,7 +395,7 @@ https://www.data.go.kr/data/15122366/openapi.do
 
 ---
 
-## 💡 테스트 계획 및 결과 보고서
+# 💡 테스트 계획 및 결과 보고서
 
 ### 질문 예시
 
@@ -416,7 +423,9 @@ https://www.data.go.kr/data/15122366/openapi.do
 
 ---
 
-## 🐛 트러블슈팅
+# 🐛 트러블슈팅
+
+(인당 1개 이상 트러블슈팅 내용 추가 요망)
 
 ### 1. 검색 결과 부정확
 
@@ -438,7 +447,7 @@ https://www.data.go.kr/data/15122366/openapi.do
 
 ---
 
-## 🤖 수행결과(시연 페이지)
+# 🤖 수행결과(시연 페이지)
 
 (여기에 챗봇 링크 입력)
 
@@ -446,7 +455,7 @@ https://www.data.go.kr/data/15122366/openapi.do
 
 ---
 
-## ✒️ 한 줄 회고
+# ✒️ 한 줄 회고
 
 | 이름 | 회고 |
 |----------|-------------|
