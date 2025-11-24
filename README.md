@@ -29,8 +29,8 @@
 
 ## 🖐️ 팀 소개
 
-- 팀명 : 맺음
-- 팀원 소개 :
+- ### 팀명 : **맺음**
+- ### 팀원 소개 :
 
 <div align="center">
 	
@@ -93,6 +93,7 @@
 	##### 출처: 통계청
 
 </details>
+<br>
 <details>
 <summary>해외 죽음 준비 문화 동향</summary>
 	
@@ -105,7 +106,7 @@ Shukatsu 개념 정리(위키피디아) [](https://en.wikipedia.org/wiki/Shukats
 
 </details>
 	
-이러한 배경에서 저희는 **신뢰할 수 있는 안내/대화 서비스의 필요성**을 느끼고 도움을 줄 수 있는 챗봇을 구상하게 되었습니다.
+### 이러한 배경에서 저희는 **신뢰할 수 있는 안내/대화 서비스의 필요성**을 느끼고 도움을 줄 수 있는 챗봇을 구상하게 되었습니다.
 
 #### **프로젝트 목표**
 
@@ -144,6 +145,7 @@ Shukatsu 개념 정리(위키피디아) [](https://en.wikipedia.org/wiki/Shukats
 ## 🪢시스템 아키텍처
 
 ### 프로젝트 구조
+(추후 marge한 최종 형태로 갱신 예정)
 
 ```
 .
@@ -184,7 +186,9 @@ Shukatsu 개념 정리(위키피디아) [](https://en.wikipedia.org/wiki/Shukats
 
 ## 📅 WBS
 
-(여기에 WBS 입력)
+(추후 최종 버전으로 갱신)
+
+<img src="data/image/wbs-preview.png">
 
 <br>
 
@@ -192,12 +196,16 @@ Shukatsu 개념 정리(위키피디아) [](https://en.wikipedia.org/wiki/Shukats
 
 ## *️⃣ 요구사항 명세서
 
-이 서비스는 다음과 같은 정보/기능을 제공합니다.
+이 서비스는 다음과 같은 정보/기능을 제공합니다.<br>
+(파트별 추가 내용 1줄씩 보완 예정)
 #### 유산상속 관련 법률 기반 정보
 - 민법, 상속세법 등
-#### 장례절차 및 장례식장 정보 (전국 장례식장 데이터베이스)
-#### 디지털 유산 관리 (사이버 개인정보, 계정 관리)
-#### 사용자 맞춤 상담(사용자가 입력한 대화/감정 기반, 작은 행복 행동 추천)
+#### 장례절차 및 장례식장 정보
+- 전국 장례식장 데이터베이스
+#### 디지털 유산 관리 
+- 사이버 개인정보, 계정 관리
+#### 감성적인 대화 
+- 사용자 기분 상태에 맞는 공감/대화
 
 <br>
 
@@ -230,6 +238,7 @@ https://www.data.go.kr/data/15122364/openapi.do
 https://www.data.go.kr/data/15122365/openapi.do
 https://www.data.go.kr/data/15122366/openapi.do
 </details>
+<br>
 <details>
 <summary>유산 관련</summary>
 
@@ -257,6 +266,7 @@ https://www.data.go.kr/data/15122366/openapi.do
 
 [https://journal.kiso.or.kr/?p=11475](https://journal.kiso.or.kr/?p=11475)
 </details>
+<br>
 <details>
 <summary>사이버 개인정보 처리 관련</summary>
 
@@ -305,8 +315,9 @@ https://www.data.go.kr/data/15122366/openapi.do
 [https://www.privacy.go.kr/front/contents/cntntsView.do?contsNo=196](https://www.privacy.go.kr/front/contents/cntntsView.do?contsNo=196) 
 
 </details>
+<br>
 <details>
-<summary>공감적인 대화 관련</summary>
+<summary>감정적인 대화 관련</summary>
 
 ####   호스피스·완화의료 영적돌봄 가이드라인
    -   환자의 정신적 고통, 삶의 의미와 목적, 관계에 대해 어떻게 접근하고 대화해야 하는지 구체적인 지침
@@ -327,12 +338,14 @@ https://www.data.go.kr/data/15122366/openapi.do
        🔗 [미시건 주립대학 산하 Sparrow 의료센터 제공 자료](https://www.uofmhealthsparrow.org/sites/default/files/2022-08/five-wishes-advanced-planning-guide.pdf)
  
 </details>
+<br>
 <details>
 <summary>안전 및 윤리 가드레일 데이터</summary>
 
 [https://www.kakaocorp.com/page/detail/11567](https://www.kakaocorp.com/page/detail/11567) [https://huggingface.co/collections/kakaocorp/kanana-safeguard](https://huggingface.co/collections/kakaocorp/kanana-safeguard)
 
 </details>
+<br>
 <details>
 <summary>참고한 연구 및 글</summary>
 
@@ -369,9 +382,7 @@ https://www.data.go.kr/data/15122366/openapi.do
 
 ## 💾DB 연동 구현 코드
 
-```
-- (여기에 DB 연동 구현 코드 입력)
-```
+- (여기에 DB 연동 구현 코드 링크 입력)
 
 <br>
 
@@ -380,6 +391,8 @@ https://www.data.go.kr/data/15122366/openapi.do
 ## 💡 테스트 계획 및 결과 보고서
 
 ### 질문 예시
+
+(여기에 테스트 응답 입력)
 
 1. **유산상속 관련**
    - "상속세율이 얼마야?"
@@ -391,70 +404,34 @@ https://www.data.go.kr/data/15122366/openapi.do
 
 3. **감성 대화 관련**
    - "오늘 따라 기운이 없네. 재밌는 이야기라도 들려줄래?"
-   - "집에만 오래 있었더니 더 우울해져서 뭐라도 하고 싶은데 추천해줄만한게 있을까?"
+   - "집에만 오래 있었더니 더 우울해져서 뭐라도 하고 싶은데 괜찮은 방법 추천해줘"
 
 ### 대화 기록 유지
 
 챗봇은 세션별로 대화 기록을 유지합니다:
-- **같은 브라우저 탭**: 이전 대화 컨텍스트 유지
-- **새 탭/브라우저**: 새로운 세션으로 시작
-- **기록 초기화**: 사이드바의 "🗑️ 대화 기록 지우기" 버튼 클릭
 
-### 테스트
+(여기에 테스트 문답 입력)
 
-```bash
-# 대화 기록 테스트
-python tests/test_memory.py
-
-# 검색 기능 테스트
-python tests/test_retrieval.py
-
-# 일반 쿼리 테스트
-python tests/test_general.py
-
-# 전처리 로직 테스트
-python tests/test_preprocessing.py
-```
+<br>
 
 ---
 
 ## 🐛 트러블슈팅
 
-### 1. Pinecone 인덱스 한도 초과
+### 1. 검색 결과 부정확
 
-**오류:**
-```
-Request failed. You've reached the max serverless indexes allowed in project Default (5).
-```
+- **주소 문제**(유사도 검색) : 주소별 벡터값의 차이가 작아 주소를 잘 못 잡아오는 문제<br>
+→ 필터 적용(지역) :  get_close_matches 사용 단어 유사도 검사 후, 지역 리스트 속에서 찾아서 그것으로 필터 적용
 
-**해결:**
-- Pinecone 콘솔에서 불필요한 인덱스 삭제
-- 또는 기존 인덱스의 Namespace를 활용 (현재 방식)
+- **파생 문제** : 지역 필터와 시설구분(시설별 지역목록 차이 존재)을 함께 쓸 경우 굳이 벡터 DB를 사용할 이유가 없어진다.<br>
+→ 충분히 많은 양의 지역을 get_close_matches 함수를 통해 가져오고 그것을 한 번의 필터(지역)만을 사용해 검색하는 방향으로 진행. 시설은 벡터 유사도로 알아서 분리.
 
-### 2. OpenAI API Rate Limit
+### 2. RAG 응답 정확도 개선(프롬프트 기반)	
 
-**오류:**
-```
-Rate limit reached for requests
-```
-
-**해결:**
-- `scripts/index_to_pinecone.py`의 `time.sleep(0.5)` 값 증가
-- OpenAI API Tier 업그레이드
-
-### 3. 검색 결과가 부정확함
-
-**해결:**
-1. `n_results` 값 증가 (15 → 20)
-2. 쿼리 재작성 프롬프트 튜닝 (`rewrite_node` 참고)
-3. 임베딩 모델 변경 고려 (`text-embedding-3-large`)
-
-### 4. RAG 응답 정확도 개선(프롬프트 기반)	
-
-**오류:**
+- **문제:**
 질의에 대응하는 청크를 정확히 참조하지 못해 응답 품질이 떨어지는 문제가 발견
 
-**해결:**  
+- **해결:**  
 프롬프트 템플릿을 재설계하고 시스템 메시지·지시문을 세분화한 뒤, 여러 유형의 질문으로 반복 검증하여 모델이 의도한 데이터 기반 응답을 안정적으로 생성하도록 해결
 
 <br>
@@ -473,7 +450,7 @@ Rate limit reached for requests
 
 | 이름 | 회고 |
 |----------|-------------|
-| 배상준|  (여기에 한 줄 회고 입력)|
+| 배상준 |  (여기에 한 줄 회고 입력)|
 | 박소희 | (여기에 한 줄 회고 입력) |
 | 이승원 | (여기에 한 줄 회고 입력) |
 | 김성욱 | (여기에 한 줄 회고 입력) |
