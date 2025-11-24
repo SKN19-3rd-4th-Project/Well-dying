@@ -126,13 +126,4 @@ class SessionManager:
 
     def get_user_sessions(self, user_id: str) -> List[Dict[str, Any]]:
         """
-        호환용: 단일 세션 파일 기반이므로 하나의 요약을 리스트로 반환.
-        """
-        session = self.load_session(user_id)
-        return [
-            {
-                "user_id": user_id,
-                "last_visit": session.get("last_visit"),
-                "messages": session.get("conversation_history", []),
-            }
-        ]
+        호환용: 단일 세션 파일 기반이므로 하나의 요약을 리스�

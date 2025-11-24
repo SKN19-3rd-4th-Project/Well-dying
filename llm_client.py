@@ -19,6 +19,7 @@ class LLMClient:
     def get_model_with_tools(self, tools: list):
         """Model instance with tool bindings enabled."""
         return self.chat_model.bind_tools(tools)
+
     def get_base_model(self):
         """Base chat model without tool bindings."""
         return self.chat_model

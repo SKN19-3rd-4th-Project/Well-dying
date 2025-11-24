@@ -192,26 +192,4 @@ def search_empathy_questions_tool(
     seen_local: Set[str] = set()
 
     questions = []
-    for m in res.get("matches", []):
-        meta = m.get("metadata", {})
-        q_text = meta.get("question_text")
-        if not q_text or q_text in already or q_text in seen_local:
-            continue
-        seen_local.add(q_text)
-        questions.append(f"- {q_text} (의도: {meta.get('intent')})")
-        if len(questions) >= 3:
-            break
-
-    if not questions and res.get("matches"):
-        # fallback: allow repeats if nothing fresh
-        questions = [
-            f"- {m['metadata'].get('question_text')} (의도: {m['metadata'].get('intent')})"
-            for m in res.get("matches", [])[:3]
-        ]
-
-    already.update(seen_local)
-    return "\n".join(questions) if questions else "적절한 질문이 없습니다."
-
-
-# Expose tool list
-TOOLS = [recommend_activities_tool, search_empathy_questions_tool]
+    for m i

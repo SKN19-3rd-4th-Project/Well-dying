@@ -120,8 +120,4 @@ def empathy_node(state):
     llm_client = LLMClient()
     model = llm_client.get_model_with_tools(TOOLS)
 
-    messages = [SystemMessage(content=system_msg)] + state["messages"]
-
-    response = model.invoke(messages)
-
-    return {"messages": [response]}
+    messages = [SystemMessage(con
