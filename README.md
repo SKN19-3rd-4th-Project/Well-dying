@@ -184,7 +184,8 @@ Shukatsu 개념 정리(위키피디아) [](https://en.wikipedia.org/wiki/Shukats
 
 ## 📅 WBS
 
-(여기에 WBS 입력)
+(추후 최종 버전으로 갱신)
+<img src="data/image/wbs-preview.png">
 
 <br>
 
