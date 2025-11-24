@@ -188,6 +188,38 @@
 
 <br>
 
+### 데이터 준비 단계
+
+<img src="data/image/data-preparation.png">
+
+**데이터 카테고리:**
+- Cyber Legacy (사이버 유산): 온라인 계정 관리, 디지털 유산
+- Subsidy (정부 지원금): 장례 지원금, 상속 관련 혜택
+- Funeral (장례 절차): 전국 장례식장, 무덤, 화장터 정보
+- Persona (톤앤매너): 대화 규칙, 공감 질문
+
+### 인덱싱 단계
+
+<img src="data/image/indexing-step.png">
+
+**Pinecone 구조:**
+- Index Name: `temp`
+- Namespace: `well-dying` (팀원 데이터와 분리)
+- Dimension: 1536 (text-embedding-3-small)
+- Metric: cosine similarity
+
+### 챗봇 실행 단계 (LangGraph Workflow)
+
+<img src="data/image/langgraph-workflow.png">
+
+**LangGraph 노드 설명:**
+1. rewrite_node: 사용자 질문을 검색에 최적화된 형태로 재작성
+2. search_node: Pinecone에서 유사 문서 검색 (Top 15)
+3. format_context_nod: 검색된 문서를 컨텍스트로 구성
+4. generate_node: 컨텍스트 기반 답변 생성 + 대화 기록 업데이트
+
+<br>
+
 ---
 
 # 📅 WBS
@@ -381,7 +413,7 @@ https://www.data.go.kr/data/15122366/openapi.do
 ### 전처리 요약
 
 - 사용하기 적합한 형태로 형식 변환, 청킹 진행
-- (여기에 임베딩 모델 입력) 임베딩 모델 사용하여 pinecone db에 적재
+- 임베딩 모델 `text-embedding-3-small` 사용하여 pinecone db에 적재
 
 <br>
 
