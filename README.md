@@ -224,8 +224,6 @@
 
 # 📅 WBS
 
-(추후 최종 버전으로 갱신)
-
 <img src="data/image/wbs-preview.png" width="700">
 
 <br>
