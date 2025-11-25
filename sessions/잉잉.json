@@ -1,0 +1,25 @@
+{
+    "user_id": "잉잉",
+    "last_visit": null,
+    "user_profile": {
+        "name": "잉잉",
+        "mobility": "실내에서만 주로 움직인다",
+        "emotion": "그래도 꽤 평온하다",
+        "A1": "잉잉",
+        "A2": "실내에서만 주로 움직인다",
+        "B1": "그래도 꽤 평온하다",
+        "activity_range": "실내에서만 주로 움직인다"
+    },
+    "conversation_history": [
+        {
+            "timestamp": "2025-11-25T11:06:04.546424",
+            "role": "user",
+            "content": "안녕"
+        },
+        {
+            "timestamp": "2025-11-25T11:06:04.546970",
+            "role": "assistant",
+            "content": "안녕하세요, 잉잉님. 오늘은 어떻게 지내고 계신가요? 마음이 편안하시길 바라요."
+        }
+    ]
+}

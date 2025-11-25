@@ -1,0 +1,1456 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>lifeclover</title>
+    <script crossorigin src="https://cdn.jsdelivr.net/npm/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://cdn.jsdelivr.net/npm/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script crossorigin src="https://cdn.jsdelivr.net/npm/react-markdown@10.1.0/umd/react-markdown.min.js"></script>
+    <script crossorigin src="https://cdn.jsdelivr.net/npm/remark-gfm@3.0.1/index.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/markdown-it/dist/markdown-it.min.js"></script>
+    <script>
+        // Normalize UMD globals for ReactMarkdown/remarkGfm/markdown-it
+        window.ReactMarkdown = window.ReactMarkdown?.default || window.ReactMarkdown;
+        window.remarkGfm = window.remarkGfm?.default || window.remarkGfm;
+        window.markdownit = window.markdownit || window.markdownit?.default || (window.markdownit && window.markdownit.default);
+    </script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: #f0f0f0;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #root {
+            height: 100%;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .mobile-frame {
+            width: 390px;
+            height: 844px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            border-radius: 40px;
+            background: white;
+        }
+
+        .screen {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        /* 애니메이션 효과 */
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(5deg); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.45s ease;
+        }
+
+        .fade-up {
+            animation: fadeUp 0.45s ease;
+        }
+
+        .splash-screen {
+            background-image: url('assets/iPhone_14_-_1.jpg');
+        }
+
+       
+        .splash-animated {
+            position: absolute;
+            top: 180px;
+            left: 50px;
+            width: 150px;
+            height: 150px;
+            animation: bounce 2s ease-in-out infinite;
+            background: radial-gradient(circle at 30% 30%, #f4ffd2 0%, #d6e79f 45%, #b6c878 100%);
+            border-radius: 50%;
+            box-shadow: 0 18px 30px rgba(0,0,0,0.18);
+            filter: drop-shadow(0 6px 12px rgba(0,0,0,0.12));
+        }
+
+        .welcome-screen {
+            
+            background-image: url('assets/iPhone 14_-_4.jpg');
+        }
+
+        
+        .welcome-floating-clover {
+            position: absolute;
+            top: 150px;
+            left: 30%;
+            transform: translateX(-40%);
+            width: 160px;
+            height: 160px;
+            animation: float 3s ease-in-out infinite;
+            filter: drop-shadow(0 12px 24px rgba(0,0,0,0.2));
+        }
+
+        .splash-animated::after,
+        .welcome-animated-top::after,
+        .welcome-animated-char::after {
+            content: '';
+            position: absolute;
+            right: -18px;
+            bottom: -14px;
+            font-size: 32px;
+            animation: float 3.2s ease-in-out infinite;
+        }
+
+        .splash-animated::before,
+        .welcome-animated-top::before,
+        .welcome-animated-char::before {
+            content: '';
+            position: absolute;
+            top: -16px;
+            left: -10px;
+            width: 28px;
+            height: 28px;
+            background: radial-gradient(circle, #fff8e1 0%, #ffd88a 70%);
+            border-radius: 50%;
+            animation: bounce 2.2s ease-in-out infinite;
+            opacity: 0.9;
+        }
+
+        .interactive-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+            padding-bottom: 80px;
+            gap: 20px;
+        }
+
+        /* 실제 버튼 스타일 */
+        .welcome-button {
+            width: 280px;
+            height: 60px;
+            border: none;
+            border-radius: 25px;
+            font-size: 20px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            pointer-events: auto;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+        }
+
+        .welcome-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        }
+
+        .welcome-button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .btn-login {
+            background: #f5f5dc;
+            color: #333;
+        }
+
+        .btn-signup {
+            background: #f5f5dc;
+            color: #333;
+        }
+
+        /* 채팅 화면 */
+        .chat-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            background: white;
+            position: relative;
+        }
+
+        /* 탭 상단 채움 */
+        .tab-top-fill {
+            height: 32px;
+            background: #d3e299;
+            width: 100%;
+            flex-shrink: 0;
+            pointer-events: none;
+        }
+
+        /* 체크리스트 완료 후 환영 오버레이 */
+        .wallpaper-overlay {
+            position: absolute;
+            inset: 0;
+            background: url('assets/lify_wallpaper.png') center/cover no-repeat;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+            padding: 40px 24px 60px;
+            z-index: 1500;
+            color: #fff;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.4);
+            backdrop-filter: blur(1px);
+        }
+
+        .wallpaper-message {
+            font-size: 22px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 18px;
+            line-height: 1.4;
+        }
+
+        .wallpaper-button {
+            padding: 14px 20px;
+            background: rgba(0,0,0,0.65);
+            border: none;
+            border-radius: 18px;
+            color: #fff;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+        }
+
+        /* 탭 바 */
+        .tab-bar {
+            background: #d3e299;
+            padding: 16px 20px;
+            display: flex;
+            gap: 8px;
+            border-radius: 0 0 24px 24px;
+            flex-shrink: 0;
+            margin-top: 0;
+            box-shadow: 0 6px 14px rgba(0,0,0,0.08);
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            background: transparent;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn.active {
+            background: white;
+            color: #333;
+        }
+
+        /* 메시지 영역 */
+        .messages-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            background: white;
+        }
+
+        .message {
+            margin-bottom: 20px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .message.user {
+            flex-direction: row-reverse;
+        }
+
+        .message-avatar {
+            width: 54px;
+            height: 54px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            background: #d3e299;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .message-avatar.info-avatar {
+            background-image: url('assets/BSJ.png');
+        }
+
+        .message-avatar.chat-avatar {
+            background-image: url('assets/lify3.png');
+        }
+
+        .message-content {
+            max-width: 70%;
+            margin-left: 12px;
+        }
+
+        .message-bubble {
+            padding: 12px 16px;
+            border-radius: 16px;
+            font-size: 16px;
+            line-height: 1.5;
+            background: #f5f5f5;
+            color: #333;
+            word-wrap: break-word;
+        }
+
+        .message-bubble.info-bot {
+            border: 2px solid #7fb157;
+        }
+
+        .message.user .message-bubble {
+            background: #d3e299;
+            color: #333;
+        }
+
+        .message-time {
+            font-size: 12px;
+            color: #999;
+            margin-top: 4px;
+        }
+
+        /* 입력 영역 - 항상 표시 */
+        .input-area {
+            padding: 16px 20px;
+            background: white;
+            border-top: 1px solid #f0f0f0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-shrink: 0;
+        }
+
+        .message-input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 2px solid #e5e5e5;
+            border-radius: 24px;
+            font-size: 16px;
+            outline: none;
+            background: #f8f8f8;
+        }
+
+        .message-input:focus {
+            border-color: #d3e299;
+            background: white;
+        }
+
+        .send-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            background: #d3e299;
+            color: #333;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            font-size: 18px;
+        }
+
+        .send-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .send-btn:disabled {
+            background: #e5e5e5;
+            cursor: not-allowed;
+        }
+
+        /* 타이핑 표시 */
+        .typing-indicator {
+            display: flex;
+            gap: 4px;
+            padding: 12px 16px;
+            background: #f5f5f5;
+            border-radius: 16px;
+            width: fit-content;
+        }
+
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #999;
+            animation: typing 1.4s infinite;
+        }
+
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes typing {
+            0%, 60%, 100% { transform: translateY(0); opacity: 0.5; }
+            30% { transform: translateY(-8px); opacity: 1; }
+        }
+
+        /* 모달 애니메이션 */
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: translate(-50%, -50%) scale(0.97); }
+            to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        }
+
+        @keyframes modalFadeOut {
+            from { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+            to { opacity: 0; transform: translate(-50%, -50%) scale(0.97); }
+        }
+
+        @keyframes backdropFadeIn {
+            from { opacity: 0; }
+            to { opacity: 0.18; }
+        }
+
+        @keyframes backdropFadeOut {
+            from { opacity: 0.18; }
+            to { opacity: 0; }
+        }
+
+        /* 모달 */
+        .modal-wrapper {
+            position: absolute;
+            inset: 0;
+            z-index: 1200;
+        }
+
+        .modal-backdrop {
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.18);
+            animation: backdropFadeIn 0.2s ease forwards;
+        }
+
+        .modal-wrapper.closing .modal-backdrop {
+            animation: backdropFadeOut 0.2s ease forwards;
+        }
+
+        .modal {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 40px 30px;
+            border-radius: 24px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            z-index: 1000;
+            width: 320px;
+            animation: modalFadeIn 0.22s ease forwards;
+        }
+
+        .modal.closing {
+            animation: modalFadeOut 0.18s ease forwards;
+        }
+
+        .modal-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #333;
+        }
+
+        .modal-input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e5e5e5;
+            border-radius: 12px;
+            font-size: 15px;
+            margin-bottom: 12px;
+            outline: none;
+        }
+
+        .modal-input:focus {
+            border-color: #d3e299;
+        }
+
+        .modal-btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .modal-btn-primary {
+            background: #d3e299;
+            color: #333;
+        }
+
+        .modal-btn-primary:hover {
+            background: #b5c88f;
+        }
+
+        .modal-btn-secondary {
+            background: #f5f5f5;
+            color: #666;
+        }
+
+        /* 체크리스트 */
+        .checklist-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            overflow-y: auto;
+            padding: 0 30px 40px;
+            z-index: 1000;
+        }
+
+        .checklist-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 30px;
+            line-height: 1.4;
+        }
+
+        .checklist-item {
+            margin-bottom: 28px;
+        }
+
+        .checklist-question {
+            font-size: 15px;
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 12px;
+        }
+
+        .checklist-input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e5e5e5;
+            border-radius: 12px;
+            font-size: 15px;
+            outline: none;
+        }
+
+        .checklist-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option-btn {
+            padding: 14px 16px;
+            border: 2px solid #e5e5e5;
+            border-radius: 12px;
+            background: white;
+            text-align: left;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .option-btn.selected {
+            border-color: #d3e299;
+            background: #d3e299;
+            font-weight: 600;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 16px;
+            background: #d3e299;
+            color: #333;
+            border: none;
+            border-radius: 16px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+            font-size: 14px;
+        }
+
+        .logout-btn {
+            position: absolute;
+            top: 12px;
+            right: 16px;
+            border: none;
+            background: transparent;
+            color: #666;
+            font-size: 12px;
+            cursor: pointer;
+            padding: 4px 8px;
+        }
+
+        /* 체크리스트 진행 표시 */
+        .progress-wrapper {
+            position: sticky;
+            top: 0;
+            z-index: 5;
+            padding: 14px 24px 18px;
+            background: white;
+            margin: 0 -30px 24px;
+            width: calc(100% + 60px);
+            border-bottom-left-radius: 18px;
+            border-bottom-right-radius: 18px;
+        }
+
+        .progress-label {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 6px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: #f2f2f2;
+            border-radius: 999px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #d3e299, #b5c88f);
+            transition: width 0.25s ease;
+        }
+    
+        /* 애니메이션 제거 */
+        .splash-animated,
+        .welcome-animated-top,
+        .welcome-animated-char,
+        .splash-animated::before,
+        .splash-animated::after,
+        .welcome-animated-top::before,
+        .welcome-animated-top::after,
+        .welcome-animated-char::before,
+        .welcome-animated-char::after {
+            display: none !important;
+            animation: none !important;
+            background: none !important;
+        }
+</style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        // API 엔드포인트:
+        // 1) window.API_BASE_URL가 지정되면 우선 사용
+        // 2) 아니면 현재 페이지가 8000포트면 같은 오리진 사용
+        // 3) 그 외에는 localhost:8000으로 기본 설정 (정적서버 8080에서 띄우는 경우 대비)
+        const inferApiBase = () => {
+            if (window.API_BASE_URL) return window.API_BASE_URL.replace(/\/$/, '');
+            const origin = window.location.origin.replace(/\/$/, '');
+            const port = window.location.port;
+            if (port === '8000') return origin;
+            return `${window.location.protocol}//${window.location.hostname}:8000`;
+        };
+        const API_BASE_URL = inferApiBase();
+
+        const auth = {
+            setToken: (token) => localStorage.setItem('token', token),
+            getToken: () => localStorage.getItem('token'),
+            clearToken: () => localStorage.removeItem('token'),
+            isAuthenticated: () => !!localStorage.getItem('token')
+        };
+
+        const api = {
+            async request(endpoint, options = {}) {
+                const token = auth.getToken();
+                const headers = {
+                    'Content-Type': 'application/json',
+                    ...(token && { 'Authorization': `Bearer ${token}` }),
+                    ...options.headers
+                };
+
+                const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+                    ...options,
+                    headers
+                });
+
+                if (!response.ok) {
+                    let errorDetail = 'API 요청 실패';
+                    let status;
+                    try {
+                        const errJson = await response.json();
+                        errorDetail = errJson.detail || errorDetail;
+                        status = response.status;
+                    } catch (e) {
+                        status = response.status;
+                    }
+
+                    if (status === 401 || status === 403) {
+                        auth.clearToken();
+                        throw Object.assign(new Error('로그인이 만료되었습니다. 다시 로그인해 주세요.'), { status });
+                    }
+
+                    throw Object.assign(new Error(errorDetail), { status });
+                }
+
+                return response.json();
+            },
+
+            async login(userId, password) {
+                return this.request('/api/auth/login', {
+                    method: 'POST',
+                    body: JSON.stringify({ user_id: userId, password })
+                });
+            },
+
+            async register(userId, password) {
+                return this.request('/api/auth/register', {
+                    method: 'POST',
+                    body: JSON.stringify({ user_id: userId, password })
+                });
+            },
+
+            async sendMessage(message, mode = 'chat') {
+                return this.request('/api/chat', {
+                    method: 'POST',
+                    body: JSON.stringify({ message, mode })
+                });
+            },
+
+            async getWelcome() {
+                return this.request('/api/welcome');
+            },
+
+            async getChecklist() {
+                return this.request('/api/checklist');
+            },
+
+            async saveProfile(profile) {
+                return this.request('/api/profile', {
+                    method: 'POST',
+                    body: JSON.stringify({ profile })
+                });
+            }
+        };
+
+        function App() {
+            const [screen, setScreen] = useState('splash');
+            const [showModal, setShowModal] = useState(false);
+            const [modalType, setModalType] = useState('login');
+            const [modalClosing, setModalClosing] = useState(false);
+
+            useEffect(() => {
+                const MIN_SPLASH_MS = 3200;
+                const start = Date.now();
+
+                const goWelcome = () => {
+                    const delay = Math.max(0, MIN_SPLASH_MS - (Date.now() - start));
+                    setTimeout(() => setScreen('welcome'), delay);
+                };
+
+                if (auth.isAuthenticated()) {
+                    api.request('/api/profile')
+                        .then(() => {})
+                        .catch(() => {
+                            auth.clearToken();
+                        })
+                        .finally(() => {
+                            goWelcome();
+                        });
+                    return;
+                }
+
+                goWelcome();
+            }, []);
+
+            const handleAuth = async (userId, password, isLogin) => {
+                try {
+                    const result = isLogin 
+                        ? await api.login(userId, password)
+                        : await api.register(userId, password);
+                    
+                    auth.setToken(result.token);
+
+                    setScreen('chat');
+                    setModalClosing(true);
+                    setTimeout(() => setShowModal(false), 200);
+                } catch (error) {
+                    alert(error.message || '로그인에 실패했습니다.');
+                    if (error.status === 401 || error.status === 403) {
+                        auth.clearToken();
+                    }
+                }
+            };
+
+            if (screen === 'splash') {
+                return (
+                    <div className="mobile-frame">
+                        <div className="screen splash-screen">
+                            <div className="splash-animated"></div>
+                        </div>
+                    </div>
+                );
+            }
+
+            if (screen === 'welcome') {
+                return (
+                    <div className="mobile-frame">
+                        <div className="screen welcome-screen">
+                        <img 
+                            src="assets/세잎.png" 
+                                className="welcome-floating-clover" 
+                                alt="클로버" 
+                            />
+                        </div>
+                        <div className="interactive-layer">
+                            <button 
+                                className="welcome-button btn-login"
+                                onClick={() => {
+                                    setModalType('login');
+                                    setModalClosing(false);
+                                    setShowModal(true);
+                                }}
+                            >
+                                로그인
+                            </button>
+                            <button 
+                                className="welcome-button btn-signup"
+                                onClick={() => {
+                                    setModalType('register');
+                                    setModalClosing(false);
+                                    setShowModal(true);
+                                }}
+                            >
+                                함께하기
+                            </button>
+                        </div>
+                        
+                        {showModal && (
+                            <div className={`modal-wrapper ${modalClosing ? 'closing' : ''}`}>
+                                <div className="modal-backdrop" onClick={() => {
+                                    setModalClosing(true);
+                                    setTimeout(() => setShowModal(false), 200);
+                                }}></div>
+                                <AuthModal 
+                                    type={modalType}
+                                    onClose={() => {
+                                        setModalClosing(true);
+                                        setTimeout(() => setShowModal(false), 200);
+                                    }}
+                                    onSubmit={handleAuth}
+                                    closing={modalClosing}
+                                />
+                            </div>
+                        )}
+                    </div>
+                );
+            }
+
+            if (screen === 'checklist') {
+                return (
+                    <div className="mobile-frame">
+                        <ChecklistScreen onComplete={() => setScreen('chat')} />
+                    </div>
+                );
+            }
+
+            if (screen === 'chat') {
+                return (
+                    <div className="mobile-frame">
+                        <ChatScreen />
+                    </div>
+                );
+            }
+
+            return null;
+        }
+
+        function AuthModal({ type, onClose, onSubmit, closing }) {
+            const [userId, setUserId] = useState('');
+            const [password, setPassword] = useState('');
+
+            const handleSubmit = () => {
+                if (!userId || !password) {
+                    alert('아이디와 비밀번호를 입력하세요');
+                    return;
+                }
+                onSubmit(userId, password, type === 'login');
+            };
+
+            return (
+                <div className={`modal ${closing ? 'closing' : ''}`}>
+                    <div className="modal-title">
+                        {type === 'login' ? '로그인' : '함께하기'}
+                    </div>
+                    <input
+                        type="text"
+                        className="modal-input"
+                        placeholder="아이디"
+                        value={userId}
+                        onChange={(e) => setUserId(e.target.value)}
+                    />
+                    <input
+                        type="password"
+                        className="modal-input"
+                        placeholder="비밀번호"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        onKeyPress={(e) => e.key === 'Enter' && handleSubmit()}
+                    />
+                    <button className="modal-btn modal-btn-primary" onClick={handleSubmit}>
+                        {type === 'login' ? '로그인' : '시작하기'}
+                    </button>
+                    <button className="modal-btn modal-btn-secondary" onClick={onClose}>
+                        취소
+                    </button>
+                </div>
+            );
+        }
+
+        function ChecklistScreen({ onComplete }) {
+            const LOCAL_CHECKLIST = [
+                { question_id: 'A1', question_kr: '어떻게 불러드리면 편하실까요? (이름이나 별칭을 알려주세요)', input_type: 'text_short' },
+                { question_id: 'A2', question_kr: '요즘 이동이나 활동은 어느 정도 가능하신가요?', input_type: 'single_choice', options_kr: '집안에서는 걸을 수 있다;짧은 외출 정도는 가능하다;도움이 있으면 이동 가능하다;대부분 누워 지낸다' },
+                { question_id: 'A4', question_kr: '평소 이동이나 움직임은 어느 정도 가능하신가요?', input_type: 'single_choice', options_kr: '걷기가 비교적 편하다;천천히라면 걷기는 가능하다;실내에서만 주로 움직인다;대부분 누워 지낸다' },
+                { question_id: 'B1', question_kr: '요즘 마음 상태를 한 단어로 표현한다면 어떤 느낌에 가까우신가요?', input_type: 'single_choice', options_kr: '불안하다;무기력하다;외롭다;혼란스럽다;슬프다;그래도 꽤 평온하다;말로 표현하기 어렵다' },
+            ];
+            const ESSENTIAL_QUESTION_IDS = ['A1', 'A2', 'A4', 'B1']; // 최소 질문만 표시
+            const [checklist, setChecklist] = useState([]);
+            const [answers, setAnswers] = useState({});
+            const [loading, setLoading] = useState(true);
+            const [loadError, setLoadError] = useState('');
+            const answeredCount = checklist.filter(item => {
+                const v = answers[item.question_id];
+                if (Array.isArray(v)) return v.length > 0;
+                return !!(v && `${v}`.trim());
+            }).length;
+            const progress = checklist.length > 0 ? Math.round((answeredCount / checklist.length) * 100) : 0;
+
+            useEffect(() => {
+                api.getChecklist().then(data => {
+                    const list = data.checklist || [];
+                    const filtered = list.filter(item => ESSENTIAL_QUESTION_IDS.includes(item.question_id));
+                    setChecklist(filtered);
+                    if (filtered.length > 0) {
+                        setChecklist(filtered);
+                    } else {
+                        setChecklist(LOCAL_CHECKLIST);
+                    }
+                }).catch((err) => {
+                    console.error('체크리스트 로드 실패:', err);
+                    if (err.status === 401 || err.status === 403) {
+                        alert('로그인이 만료되었습니다. 다시 로그인해 주세요.');
+                        auth.clearToken();
+                        window.location.reload();
+                        return;
+                    }
+                    setChecklist([]);
+                    setLoadError('체크리스트를 불러올 수 없습니다. 잠시 후 다시 시도하거나 건너뛰기를 눌러주세요.');
+                    setChecklist(LOCAL_CHECKLIST);
+                    setLoadError('');
+                }).finally(() => {
+                    setLoading(false);
+                });
+            }, []);
+
+            const handleSubmit = async () => {
+                try {
+                    await api.saveProfile(answers);
+                    onComplete(answers);
+                } catch (error) {
+                    console.error('프로필 저장 실패:', error);
+                    onComplete(answers); // 실패해도 진행
+                }
+            };
+
+            const handleSkip = async () => {
+                try {
+                    // 스킵 시에도 최소 프로필을 저장해 이후 반복 노출을 막는다
+                    await api.saveProfile({ skipped: true });
+                } catch (error) {
+                    console.error('체크리스트 스킵 저장 실패:', error);
+                } finally {
+                    onComplete(answers);
+                }
+            };
+
+            if (loading) {
+                return (
+                    <div className="checklist-overlay">
+                        <div style={{textAlign: 'center', padding: '40px'}}>로딩 중...</div>
+                    </div>
+                );
+            }
+
+            if (loadError || checklist.length === 0) {
+                return (
+                    <div className="checklist-overlay">
+                        <div className="checklist-title">
+                            {loadError || '체크리스트를 불러올 수 없습니다'}
+                        </div>
+                        <button className="submit-btn" onClick={handleSkip}>
+                            건너뛰기
+                        </button>
+                    </div>
+                );
+            }
+
+            return (
+                <div className="checklist-overlay">
+                    <div className="progress-wrapper">
+                        <div className="progress-label">{progress}% 완료</div>
+                        <div className="progress-bar">
+                            <div className="progress-fill" style={{ width: `${progress}%` }}></div>
+                        </div>
+                    </div>
+                    <div className="checklist-title">
+                        대화를 나누기 전에<br/>조금만 알려주세요
+                    </div>
+                    
+                    {checklist.map(item => (
+                        <div key={item.question_id} className="checklist-item">
+                            <div className="checklist-question">{item.question_kr}</div>
+                            
+                            {item.input_type === 'text_short' && (
+                                <input
+                                    type="text"
+                                    className="checklist-input"
+                                    placeholder="답변을 입력하세요"
+                                    value={answers[item.question_id] || ''}
+                                    onChange={(e) => setAnswers({...answers, [item.question_id]: e.target.value})}
+                                />
+                            )}
+                            
+                            {item.input_type === 'single_choice' && item.options_kr && (
+                                <div className="checklist-options">
+                                    {item.options_kr.split(';').map(option => (
+                                        <button
+                                            key={option}
+                                            className={`option-btn ${answers[item.question_id] === option ? 'selected' : ''}`}
+                                            onClick={() => setAnswers({...answers, [item.question_id]: option})}
+                                        >
+                                            {option}
+                                        </button>
+                                    ))}
+                                </div>
+                            )}
+                            
+                            {item.input_type === 'multi_choice' && item.options_kr && (
+                                <div className="checklist-options">
+                                    {item.options_kr.split(';').map(option => {
+                                        const selected = answers[item.question_id] || [];
+                                        const isSelected = selected.includes(option);
+                                        
+                                        return (
+                                            <button
+                                                key={option}
+                                                className={`option-btn ${isSelected ? 'selected' : ''}`}
+                                                onClick={() => {
+                                                    const current = answers[item.question_id] || [];
+                                                    const newValue = isSelected
+                                                        ? current.filter(v => v !== option)
+                                                        : [...current, option];
+                                                    setAnswers({...answers, [item.question_id]: newValue});
+                                                }}
+                                            >
+                                                <span style={{marginRight: '8px'}}>{isSelected ? '☑' : '☐'}</span>
+                                                {option}
+                                            </button>
+                                        );
+                                    })}
+                                </div>
+                            )}
+                        </div>
+                    ))}
+                    
+                    <button className="submit-btn" onClick={handleSubmit}>
+                        완료
+                    </button>
+                </div>
+            );
+        }
+
+        function ChatScreen() {
+            const TAB_INFO = '알려줘요';
+            const TAB_CHAT = '대화해요';
+            const Markdown = window.ReactMarkdown || window.reactMarkdown;
+            const remarkGfm = window.remarkGfm;
+            const mdIt = window.markdownit ? window.markdownit({ html: false, linkify: true, breaks: true }) : null;
+            const markdownComponents = {
+                p: (props) => <p style={{ marginBottom: '4px' }} {...props} />,
+                strong: (props) => <span style={{ fontWeight: 700 }} {...props} />,
+                ul: (props) => <ul style={{ paddingLeft: '16px', marginBottom: '8px', listStyle: 'disc' }} {...props} />,
+                ol: (props) => <ol style={{ paddingLeft: '16px', marginBottom: '8px', listStyle: 'decimal' }} {...props} />,
+                li: (props) => <li style={{ marginBottom: '4px' }} {...props} />,
+                a: (props) => <a style={{ color: '#2563eb', textDecoration: 'underline' }} target="_blank" rel="noopener noreferrer" {...props} />,
+            };
+            const AVATAR_INFO = 'assets/BSJ.png';
+            const AVATAR_CHAT = 'assets/lify3.png';
+
+            const [activeTab, setActiveTab] = useState(TAB_INFO);
+            const [messagesByTab, setMessagesByTab] = useState({
+                [TAB_INFO]: [],
+                [TAB_CHAT]: []
+            });
+            const [inputValues, setInputValues] = useState({
+                [TAB_INFO]: '',
+                [TAB_CHAT]: ''
+            });
+            const [profileName, setProfileName] = useState('');
+            const [isTyping, setIsTyping] = useState(false);
+            const [isAnimatingBot, setIsAnimatingBot] = useState(false);
+            const [initialized, setInitialized] = useState({
+                [TAB_CHAT]: false
+            });
+            const [showChecklist, setShowChecklist] = useState(false);
+            const [hasShownChecklist, setHasShownChecklist] = useState(false);
+            const [hasProfile, setHasProfile] = useState(true);
+            const [profileChecked, setProfileChecked] = useState(false);
+            const messagesEndRef = useRef(null);
+            const [showPostChecklistWelcome, setShowPostChecklistWelcome] = useState(false);
+
+            const currentMessages = messagesByTab[activeTab] || [];
+            const currentInput = inputValues[activeTab] || '';
+
+            const addMessage = (tab, msg) => {
+                setMessagesByTab(prev => ({
+                    ...prev,
+                    [tab]: [...(prev[tab] || []), msg]
+                }));
+            };
+
+            const updateMessageContent = (tab, id, content) => {
+                setMessagesByTab(prev => {
+                    const list = prev[tab] || [];
+                    const updated = list.map(m => m.id === id ? { ...m, content } : m);
+                    return { ...prev, [tab]: updated };
+                });
+            };
+
+            const animateBotMessage = (tab, text, onComplete) => {
+                setIsAnimatingBot(true);
+                const id = `bot-${Date.now()}-${Math.random()}`;
+                const time = new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
+                addMessage(tab, { id, role: 'bot', content: '', time });
+
+                let idx = 0;
+                const step = () => {
+                    idx += 2; // 두 글자씩 진행
+                    updateMessageContent(tab, id, text.slice(0, idx));
+                    if (idx < text.length) {
+                        requestAnimationFrame(step);
+                    } else if (onComplete) {
+                        onComplete();
+                    }
+                };
+                requestAnimationFrame(step);
+            };
+
+            const setInputForTab = (tab, value) => {
+                setInputValues(prev => ({ ...prev, [tab]: value }));
+            };
+
+            const loadWelcome = () => {
+                api.getWelcome()
+                    .then(data => {
+                        const botMsg = {
+                            id: `bot-${Date.now()}`,
+                            role: 'bot',
+                            content: data.message,
+                            time: new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })
+                        };
+                        setMessagesByTab(prev => {
+                            const existing = prev[TAB_CHAT] || [];
+                            if (existing.length > 0) return prev;
+                            // 초기에는 비워두고, 탭 진입 시에만 생성
+                            return prev;
+                        });
+                    })
+                    .catch(err => {
+                        console.error('환영 메시지 로드 실패:', err);
+                    })
+                    .finally(() => {
+                        setInitialized(prev => ({ ...prev, [TAB_CHAT]: true }));
+                    });
+            };
+
+            useEffect(() => {
+                api.request('/api/profile').then(data => {
+                    const profile = data.profile || {};
+                    const has = Object.keys(profile).length > 0;
+                    const name = profile.A1 || profile.name;
+                    if (name) {
+                        setProfileName(name);
+                    }
+                    setHasProfile(has);
+                }).catch(() => {
+                    setHasProfile(false);
+                }).finally(() => {
+                    setProfileChecked(true);
+                });
+            }, []);
+
+            useEffect(() => {
+                if (!profileChecked || activeTab !== TAB_CHAT) return;
+
+                if (!hasProfile && !hasShownChecklist) {
+                    setShowChecklist(true);
+                    setHasShownChecklist(true);
+                    return;
+                }
+
+                if (hasProfile && !showChecklist && !initialized[TAB_CHAT]) {
+                    loadWelcome();
+                }
+            }, [activeTab, hasProfile, profileChecked, hasShownChecklist, showChecklist, initialized]);
+
+            useEffect(() => {
+                if (messagesEndRef.current) {
+                    messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+                }
+            }, [currentMessages, isTyping, isAnimatingBot]);
+
+            const handleSend = async () => {
+                const trimmed = currentInput.trim();
+                if (!trimmed || isTyping) return;
+
+                const timestamp = new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
+                const userMsg = { id: `user-${Date.now()}`, role: 'user', content: trimmed, time: timestamp };
+                const mode = activeTab === TAB_INFO ? 'info' : 'chat';
+
+                addMessage(activeTab, userMsg);
+                setInputForTab(activeTab, '');
+                setIsTyping(true);
+
+                try {
+                    const response = await api.sendMessage(trimmed, mode);
+                    animateBotMessage(activeTab, response.response, () => {
+                        setIsTyping(false);
+                        setIsAnimatingBot(false);
+                    });
+                } catch (error) {
+                    console.error('메시지 전송 실패:', error);
+                    addMessage(activeTab, {
+                        id: `bot-${Date.now()}`,
+                        role: 'bot',
+                        content: '지금 연결이 원활하지 않습니다. 잠시 후 다시 시도해 주세요.',
+                        time: new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })
+                    });
+                    setIsTyping(false);
+                    setIsAnimatingBot(false);
+                }
+            };
+
+            const handleTabChange = (tab) => {
+                setActiveTab(tab);
+                if (tab === TAB_CHAT) {
+                    // 프로필 없으면 체크리스트 우선
+                    if (!hasProfile && !showChecklist) {
+                        setShowChecklist(true);
+                        return;
+                    }
+                    // 탭 진입 시 환영 메시지 생성 (한 번만)
+                    setMessagesByTab(prev => {
+                        const existing = prev[TAB_CHAT] || [];
+                        if (existing.length > 0) return prev;
+                        const welcomeName = profileName || '딸래미';
+                        return {
+                            ...prev,
+                            [TAB_CHAT]: [
+                                {
+                                    id: `bot-${Date.now()}`,
+                                    role: 'bot',
+                                    content: `안녕하세요, ${welcomeName}님! 어떤 이야기를 나눠볼까요? 편하게 말씀해 주세요.`,
+                                    time: new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })
+                                }
+                            ]
+                        };
+                    });
+                }
+            };
+
+            const handleKeyDown = (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    handleSend();
+                }
+            };
+
+            const renderContent = (text) => {
+                const safeText = text || '';
+                if (Markdown) {
+                    return (
+                        <Markdown
+                            remarkPlugins={remarkGfm ? [remarkGfm] : []}
+                            components={markdownComponents}
+                        >
+                            {safeText}
+                        </Markdown>
+                    );
+                }
+                if (mdIt) {
+                    return <div dangerouslySetInnerHTML={{ __html: mdIt.render(safeText) }} />;
+                }
+                return safeText;
+            };
+
+            const handleChecklistComplete = (profileData = {}) => {
+                setShowChecklist(false);
+                setHasProfile(true);
+                setHasShownChecklist(true);
+                if (profileData.A1) {
+                    setProfileName(profileData.A1);
+                }
+                setShowPostChecklistWelcome(true);
+                // 초기 환영 메시지 비워둔 채, 오버레이 후 채팅 시작
+                setMessagesByTab(prev => ({ ...prev, [TAB_CHAT]: [] }));
+            };
+
+            return (
+                <div className="chat-container">
+                    {showChecklist && <ChecklistScreen onComplete={handleChecklistComplete} />}
+
+                    {showPostChecklistWelcome && (
+                        <div className="wallpaper-overlay">
+                            <div className="wallpaper-message">
+                                환영합니다<br/>무슨 얘기를 해볼까요?
+                            </div>
+                            <button
+                                className="wallpaper-button"
+                                onClick={() => {
+                                    setShowPostChecklistWelcome(false);
+                                    handleTabChange(TAB_CHAT);
+                                }}
+                            >
+                                대화 시작하기
+                            </button>
+                        </div>
+                    )}
+
+                    <div className="tab-top-fill"></div>
+                    <div className="tab-bar">
+                        <button 
+                            className={`tab-btn ${activeTab === TAB_INFO ? 'active' : ''}`}
+                            onClick={() => handleTabChange(TAB_INFO)}
+                        >
+                            알려줘요
+                        </button>
+                        <button 
+                            className={`tab-btn ${activeTab === TAB_CHAT ? 'active' : ''}`}
+                            onClick={() => handleTabChange(TAB_CHAT)}
+                        >
+                            대화해요
+                        </button>
+                    </div>
+
+                    <div className="messages-area">
+                        {currentMessages.length === 0 && activeTab === TAB_INFO && (
+                            <div className="empty-state">
+                                먼저 궁금한 것을 물어보세요!
+                            </div>
+                        )}
+                        
+                        {currentMessages.map((msg, idx) => (
+                            <div key={msg.id || idx} className={`message ${msg.role}`}>
+                                {msg.role === 'bot' && (
+                                    <div 
+                                        className={`message-avatar ${activeTab === TAB_INFO ? 'info-avatar' : 'chat-avatar'}`}
+                                    ></div>
+                                )}
+                                <div className="message-content">
+                                    <div className={`message-bubble ${activeTab === TAB_INFO && msg.role === 'bot' ? 'info-bot' : ''}`}>
+                                        {renderContent(msg.content)}
+                                    </div>
+                                    <div className="message-time">{msg.time}</div>
+                                </div>
+                            </div>
+                        ))}
+                        
+                        {isTyping && !isAnimatingBot && (
+                            <div className="message bot">
+                                <div
+                                    className={`message-avatar ${activeTab === TAB_INFO ? 'info-avatar' : 'chat-avatar'}`}
+                                ></div>
+                                <div className="typing-indicator">
+                                    <div className="typing-dot"></div>
+                                    <div className="typing-dot"></div>
+                                    <div className="typing-dot"></div>
+                                </div>
+                            </div>
+                        )}
+                        <div ref={messagesEndRef}></div>
+                    </div>
+
+                    <div className="input-area">
+                        <input
+                            type="text"
+                            className="message-input"
+                            placeholder={activeTab === TAB_INFO ? '궁금한 걸 알려주세요!' : '나누고 싶은 이야기가 있나요?'}
+                            value={currentInput}
+                            onChange={(e) => setInputForTab(activeTab, e.target.value)}
+                            onKeyDown={handleKeyDown}
+                            disabled={isTyping}
+                        />
+                        <button 
+                            className="send-btn"
+                            onClick={handleSend}
+                            disabled={!currentInput.trim() || isTyping}
+                        >
+                            ➤
+                        </button>
+                    </div>
+                </div>
+            );
+        }
+
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+</body>
+</html>

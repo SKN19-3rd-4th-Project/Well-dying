@@ -15,8 +15,24 @@ logger = logging.getLogger(__name__)
 
 # 데이터 파일 경로/ 혹시 몰라 남겨둠.
 current_dir = os.path.dirname(os.path.abspath(__file__))
-ordinance_file_path = os.path.join(current_dir, '../data/ordinance_region_list.json')
-facilities_file_path = os.path.join(current_dir, '../data/facilities_region_list.json')
+root_dir = os.path.abspath(os.path.join(current_dir, "..", ".."))
+_ORDINANCE_CANDIDATES = [
+    os.path.join(current_dir, "../data/ordinance_region_list.json"),  # chatbot/data (없을 가능성 큼)
+    os.path.join(root_dir, "data/ordinance_region_list.json"),       # 리포지토리 루트/data
+]
+_FACILITY_CANDIDATES = [
+    os.path.join(current_dir, "../data/facilities_region_list.json"),
+    os.path.join(root_dir, "data/facilities_region_list.json"),
+]
+
+def _pick_first_existing(candidates):
+    for path in candidates:
+        if os.path.exists(path):
+            return path
+    return candidates[-1]
+
+ordinance_file_path = _pick_first_existing(_ORDINANCE_CANDIDATES)
+facilities_file_path = _pick_first_existing(_FACILITY_CANDIDATES)
 
 # 설정
 PINECONE_API_KEY = os.getenv("PINECONE_API_KEY")
