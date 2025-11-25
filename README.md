@@ -449,6 +449,10 @@ https://www.data.go.kr/data/15122366/openapi.do
         }
 ```
 
+<img src="data/image/val_data1.png">
+
+<br>
+
 2. **장례절차 관련**
 
 ```
@@ -463,6 +467,9 @@ https://www.data.go.kr/data/15122366/openapi.do
             "content": "독산장례식장에 대한 정보는 다음과 같습니다:\n\n- **이름**: 독산장례식장\n- **주소**: 서울특별시 금천구 시흥대로116길 5 (독산동)\n- **전화번호**: 02-858-4444\n- **시설 유형**: 장례식장\n\n추가로 궁금한 사항이 있으시면 말씀해 주세요."
         }
 ```
+<img src="data/image/val_data2.png">
+
+<br>
 
 3. **감성 대화 관련**
 
