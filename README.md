@@ -169,7 +169,6 @@
 │   ├── ordinance_region_list.json 
 │   └── user_profile_checklist.json 
 ├── scripts/                      
-│   ├── __pycache__/
 │   ├── __init__.py
 │   ├── conversation_agent.py      # 대화 처리 에이전트 
 │   ├── empathy_agent.py           # 공감 처리 에이전트
