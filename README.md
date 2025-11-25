@@ -154,36 +154,32 @@
 (추후 marge한 최종 형태로 갱신 예정)
 
 ```
-.
-├── chatbot/                    # 챗봇 애플리케이션
-│   ├── app.py                  # Streamlit 웹 인터페이스
-│   └── src/
-│       ├── chatbot.py          # RAG 챗봇 (LangGraph)
-│       ├── preprocessing.py    # PDF 전처리
-│       └── indexer.py          # ChromaDB 인덱싱 (레거시)
-│
-├── data/                       # 데이터 저장소
-│   ├── raw/                    # 원본 PDF 파일
-│   ├── processed/              # 전처리된 JSONL 파일
-│   │   ├── unified_well_dying_data.jsonl  # 통합 데이터
-│   │   └── *.jsonl             # 개별 처리 파일
-│   └── chroma_db/              # ChromaDB (미사용)
-│
-├── scripts/                    # 유틸리티 스크립트
-│   ├── merge_data.py           # 데이터 통합 스크립트
-│   ├── index_to_pinecone.py    # Pinecone 인덱싱
-│   ├── analyze_pdfs.py         # PDF 분석
-│   └── validate_data.py        # 데이터 검증
-│
-├── tests/                      # 테스트 스크립트
-│   ├── test_memory.py          # 대화 기록 테스트
-│   ├── test_retrieval.py       # 검색 테스트
-│   ├── test_general.py         # 일반 쿼리 테스트
-│   └── test_preprocessing.py   # 전처리 테스트
-│
-├── requirements.txt            # Python 패키지 의존성
-├── .env                        # 환경 변수 (API Keys)
-└── README.md                   # 프로젝트 문서 (본 파일)
+├── assets/                      
+├── chatbot/
+│   ├── assets/
+│   ├── chatbot_model.ipynb        
+│   ├── __init__.py
+│   ├── index.html               
+│   └── main.py                   
+├── data/                          
+│   ├── conversation_rules.json   
+│   ├── empathy_questions.json    
+│   ├── facilities_region_list.json 
+│   ├── meaningful_activities.json 
+│   ├── ordinance_region_list.json 
+│   └── user_profile_checklist.json 
+├── scripts/                      
+│   ├── __pycache__/
+│   ├── __init__.py
+│   ├── conversation_agent.py      # 대화 처리 에이전트 
+│   ├── empathy_agent.py           # 공감 처리 에이전트
+│   ├── info_agent.py              # 정보 제공 에이전트
+│   ├── llm_client.py              # LLM(Large Language Model) 클라이언트 연동
+│   ├── recommend_agent.py         # 추천 에이전트
+│   └── session_manager.py         # 세션 관리 로직
+├── sessions/                      # 사용자 세션 데이터 저장 폴더
+├── index.html                     # 프로젝트 루트의 HTML 파일
+└── requirements.txt               # 프로젝트에 필요한 Python 패키지 목록
 ```
 
 <br>
