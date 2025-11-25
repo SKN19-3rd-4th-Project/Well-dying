@@ -69,12 +69,12 @@
 
 ### ■ 무연고 사망 증가
 
-<img src="data/image/news1.jpg">
+<img src="data/image/news1.png">
 
 - 무연고 사망자는 년마다 증가하는 추세이며, 통계에 잡히지 않는 불특정 다수도 있어 관심과 대책이 요망됨.
 
-[https://www.newsis.com/view/NISX20250905_0003318050?utm_source=chatgpt.com](https://www.newsis.com/view/NISX20250905_0003318050?utm_source=chatgpt.com)
-##### 출처: 뉴시스
+[https://repository.kli.re.kr/bitstream/2021.oak/6926/2/%EB%85%B8%EB%8F%99%EB%A6%AC%EB%B7%B0_no.208_2022.7_7.pdf](https://repository.kli.re.kr/bitstream/2021.oak/6926/2/%EB%85%B8%EB%8F%99%EB%A6%AC%EB%B7%B0_no.208_2022.7_7.pdf)
+##### 출처: 보건복지부
 
 
 ### ■ 고령화 + 1인 가구
@@ -413,8 +413,10 @@ https://www.data.go.kr/data/15122366/openapi.do
 
 ### 전처리 요약
 
-- 사용하기 적합한 형태로 형식 변환, 청킹 진행
-- 임베딩 모델 `text-embedding-3-small` 사용하여 pinecone db에 적재
+- JSON 데이터를 대조하여 구조 일관성, 표기 방식 불일치 등 RAG 검색 품질에 문제될 요소 파악
+   => id, platform, service, scenario, title, category 등 공통 필드 구성
+
+<img src="data/image/data_preprocessed_image1.png" width="700">
 
 <br>
 
@@ -509,7 +511,7 @@ https://www.data.go.kr/data/15122366/openapi.do
 
 # 🤖 수행결과(시연 페이지)
 
-(여기에 챗봇 링크 입력)
+<img src="data/image/preview_image1.png" width="300"> <img src="data/image/preview_image2.png" width="300">
 
 <br>
 
