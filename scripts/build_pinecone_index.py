@@ -6,14 +6,12 @@ from dotenv import load_dotenv
 from openai import OpenAI
 from pinecone import Pinecone, ServerlessSpec
 
-# .env 파일 로드
 load_dotenv()
 
-# =========================
-# 1. 기본 설정
-# =========================
-INDEX_NAME = "digital-legacy-kb"  # 원하는 이름으로 수정 가능
-EMBED_MODEL = "text-embedding-3-small"   # OpenAI 임베딩 모델 이름
+# 변수 설정
+
+INDEX_NAME = "digital-legacy-kb"  
+EMBED_MODEL = "text-embedding-3-small"   
 EMBED_DIM = 1536                         # text-embedding-3-small의 차원 수
 CHUNK_FILES = [
     "identity_verification_service_chunked.json",
@@ -30,6 +28,7 @@ CHUNK_FILES = [
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 PINECONE_API_KEY = os.getenv("PINECONE_API_KEY")
 
+# 자꾸 누락되는 경우가 많아서 추가했음
 if OPENAI_API_KEY is None:
     raise RuntimeError("OPENAI_API_KEY 환경 변수가 설정되어 있지 않습니다.")
 
@@ -41,9 +40,7 @@ client = OpenAI()  # 환경 변수의 OPENAI_API_KEY를 자동 사용
 pc = Pinecone(api_key=PINECONE_API_KEY)
 
 
-# =========================
 # 2. 인덱스 생성 (최초 1회)
-# =========================
 existing_indexes = [idx["name"] for idx in pc.list_indexes()]
 if INDEX_NAME not in existing_indexes:
     print(f"[INFO] 인덱스가 없어 새로 생성합니다: {INDEX_NAME}")
@@ -59,9 +56,7 @@ else:
 index = pc.Index(INDEX_NAME)
 
 
-# =========================
-# 3. 임베딩 함수 (배치 버전)
-# =========================
+# 3. 임베딩 함수
 def embed_texts(texts: List[str]) -> List[List[float]]:
     """
     여러 개의 텍스트를 한 번에 임베딩하는 함수.
@@ -74,9 +69,7 @@ def embed_texts(texts: List[str]) -> List[List[float]]:
     return [d.embedding for d in resp.data]
 
 
-# =========================
-# 4. 청크 JSON 로드
-# =========================
+# 4. 청킹한 JSON 로드
 def load_chunks(path: str):
     with open(path, "r", encoding="utf-8") as f:
         chunks = json.load(f)
@@ -84,9 +77,7 @@ def load_chunks(path: str):
     return chunks
 
 
-# =========================
 # 5. Pinecone로 업로드 (업서트)
-# =========================
 def upsert_chunks_to_pinecone(chunks, batch_size: int = 100):
     total = len(chunks)
     for start in range(0, total, batch_size):
