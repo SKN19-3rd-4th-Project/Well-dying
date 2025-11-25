@@ -151,39 +151,33 @@
 # 🪢시스템 아키텍처
 
 ### 프로젝트 구조
-(추후 marge한 최종 형태로 갱신 예정)
 
 ```
-.
-├── chatbot/                    # 챗봇 애플리케이션
-│   ├── app.py                  # Streamlit 웹 인터페이스
-│   └── src/
-│       ├── chatbot.py          # RAG 챗봇 (LangGraph)
-│       ├── preprocessing.py    # PDF 전처리
-│       └── indexer.py          # ChromaDB 인덱싱 (레거시)
-│
-├── data/                       # 데이터 저장소
-│   ├── raw/                    # 원본 PDF 파일
-│   ├── processed/              # 전처리된 JSONL 파일
-│   │   ├── unified_well_dying_data.jsonl  # 통합 데이터
-│   │   └── *.jsonl             # 개별 처리 파일
-│   └── chroma_db/              # ChromaDB (미사용)
-│
-├── scripts/                    # 유틸리티 스크립트
-│   ├── merge_data.py           # 데이터 통합 스크립트
-│   ├── index_to_pinecone.py    # Pinecone 인덱싱
-│   ├── analyze_pdfs.py         # PDF 분석
-│   └── validate_data.py        # 데이터 검증
-│
-├── tests/                      # 테스트 스크립트
-│   ├── test_memory.py          # 대화 기록 테스트
-│   ├── test_retrieval.py       # 검색 테스트
-│   ├── test_general.py         # 일반 쿼리 테스트
-│   └── test_preprocessing.py   # 전처리 테스트
-│
-├── requirements.txt            # Python 패키지 의존성
-├── .env                        # 환경 변수 (API Keys)
-└── README.md                   # 프로젝트 문서 (본 파일)
+├── assets/                     
+├── chatbot/
+│   ├── assets/
+│   ├── chatbot_model.ipynb      
+│   ├── __init__.py
+│   ├── index.html             
+│   └── main.py                    
+├── data/                          
+│   ├── conversation_rules.json   
+│   ├── empathy_questions.json     
+│   ├── facilities_region_list.json 
+│   ├── meaningful_activities.json 
+│   ├── ordinance_region_list.json 
+│   └── user_profile_checklist.json              
+├── scripts/                       
+│   ├── __init__.py
+│   ├── conversation_agent.py     
+│   ├── empathy_agent.py         
+│   ├── info_agent.py            
+│   ├── llm_client.py           
+│   ├── recommend_agent.py       
+│   └── session_manager.py    
+├── sessions/                  
+├── index.html                  
+└── requirements.txt         
 ```
 
 <br>
