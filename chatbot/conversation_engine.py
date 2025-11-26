@@ -126,7 +126,7 @@ class ConversationEngine:
             "user_profile": profile,
             "current_mode": mode 
         }
-        
+        self.session_manager.add_message(user_id, "user", text)  # 시간을 위해 위치조정      
         response_text = ""
         
         # 3. 그래프 스트리밍 실행
@@ -142,7 +142,7 @@ class ConversationEngine:
             return "시스템 오류가 발생했습니다."
 
         # 4. 대화 내용 저장
-        self.session_manager.add_message(user_id, "user", text)
+
         self.session_manager.add_message(user_id, "assistant", response_text)
 
         # 5. 다이어리 트리거 확인
