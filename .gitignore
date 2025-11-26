@@ -2,3 +2,5 @@
 *.env
 *.keras
 *.model
+/chatbot/sessions/
+__pycache__/
