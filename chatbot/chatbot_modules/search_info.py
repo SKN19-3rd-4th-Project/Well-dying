@@ -1,4 +1,5 @@
 import os
+import re
 import json
 import logging
 from typing import List
@@ -202,9 +203,17 @@ def search_funeral_facilities(query: str, region: str = None, regions : List[str
     all_regions = sorted(list(set(all_regions)))
 
     results_list = []
-    if regions == None:
-        regions = [region]
-    k = 10 // len(regions)     # 비장의 코드 : 지역 많아지면 시간 느려져서 이렇게 했다. 물론 지역은 최대 3개로(프롬프트를 통해) 제한함.
+
+    # 복합 지역 문자열 처리: "서울과 수원 사이", "서울/수원", "서울, 수원"
+    if regions is None:
+        if region and any(key in region for key in ["과", "와", "사이", "/", ",", "between"]):
+            tokens = [t.strip() for t in re.split(r"[,/]|과|와|및|between|사이", region) if t.strip()]
+            regions = tokens if tokens else [region]
+        else:
+            regions = [region]
+
+    # 지역별 반환 건수 상향 (총합 최대 약 30건 수준)
+    k = max(5, 30 // len(regions))
 
     for rgn in regions:
 

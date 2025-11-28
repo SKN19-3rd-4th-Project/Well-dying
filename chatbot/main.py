@@ -23,8 +23,8 @@ ROOT_DIR = Path(__file__).resolve().parent.parent
 if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
 
-from scripts.conversation_engine import ConversationEngine
-from scripts.session_manager import SessionManager
+from chatbot.conversation_engine import ConversationEngine
+from chatbot.chatbot_modules.session_manager import SessionManager
 
 # Paths for serving frontend
 FRONTEND_DIR = Path(__file__).resolve().parent
