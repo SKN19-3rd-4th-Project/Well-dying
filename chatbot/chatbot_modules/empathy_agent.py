@@ -148,7 +148,7 @@ def empathy_node(state):
     """감성 대화 모드 에이전트 노드"""
     logger.info(">>> [Agent Active] Empathy Agent (감성 모드)")
     
-    # 1. 데이터 로드
+    # 데이터 로드
     profile = state.get("user_profile", {})
     current_seriousness = state.get("seriousness_score", 0.0)
     messages = state["messages"]
@@ -170,11 +170,14 @@ def empathy_node(state):
         except:
             input_weight = 3 # 기본값
 
-    # 2. 진지함 점수 업데이트
-    new_seriousness = _calculate_new_score(current_seriousness, input_weight)
-    logger.info(f"⚖️ 진지함 점수: {current_seriousness} -> {new_seriousness} (입력무게: {input_weight})")
-
-    # 3. Dynamic Prompt Injection (점수에 따른 페르소나/지침 변경)
+        # 진지함 점수 업데이트
+        new_seriousness = _calculate_new_score(current_seriousness, input_weight)
+        logger.info(f"⚖️ 진지함 점수: {current_seriousness} -> {new_seriousness} (입력무게: {input_weight})")
+    else:
+        # 사용자의 발화가 아니면 점수를 유지
+        new_seriousness = current_seriousness
+        
+    # 점수에 따른 페르소나 적용
     wisdom_instruction = ""
     if new_seriousness >= 0.6:
         wisdom_instruction = f"""
@@ -191,11 +194,11 @@ def empathy_node(state):
         user_mobility=profile.get("mobility", "거동 가능")
     ) + f"\n{wisdom_instruction}"
     
-    # 4. LLM 호출
+    # LLM 호출
     model = llm_client.get_model_with_tools(TOOLS)
     response = model.invoke([SystemMessage(content=system_msg)] + messages)
     
-    # 5. State 업데이트 (점수 저장 포함)
+    # State 업데이트 (점수 저장 포함)
     return {
         "messages": [response],
         "seriousness_score": new_seriousness
