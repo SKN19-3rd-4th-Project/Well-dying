@@ -7,24 +7,20 @@ import random
 from pinecone import Pinecone
 from langchain_openai import OpenAIEmbeddings
 from langchain_core.tools import tool
-from langchain_community.tools.tavily_search import TavilySearchResults
+from langchain_tavily import TavilySearch
 
 # 연결 상태 로깅
-# logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-try:
-    # max_results=3: 속도와 토큰 절약을 위해 상위 3개만 검색
-    tavily_search = TavilySearchResults(max_results=3)
-    tavily_search.name = "search_realtime_info_tool"
-    tavily_search.description = """
-    [Tool] 최신 뉴스, 날씨, 현재 트렌드 등 '실시간 정보'가 필요할 때 웹에서 검색합니다.
-    위로가 필요한 일반적인 대화나, 철학적인 질문에는 **절대** 사용하지 마세요.
-    사용자가 '요즘 날씨', '오늘 날씨', '오늘 뉴스', '날씨', '뉴스' 정보를 구체적으로 말할 때만 사용하세요.
-    """
-except Exception as e:
-    logger.warning(f"Tavily 도구 초기화 실패: {e}")
-    tavily_search = None
+# max_results=3: 속도와 토큰 절약을 위해 상위 3개만 검색
+tavily_search = TavilySearch(max_results=3)
+tavily_search.name = "search_realtime_info_tool"
+tavily_search.description = """
+[Tool] 최신 뉴스, 날씨, 현재 트렌드 등 '실시간 정보'가 필요할 때 웹에서 검색합니다.
+위로가 필요한 일반적인 대화나, 철학적인 질문에는 **절대** 사용하지 마세요.
+사용자가 '요즘 날씨', '오늘 날씨', '오늘 뉴스', '날씨', '뉴스' 정보를 구체적으로 말할 때만 사용하세요.
+"""
 
 # 데이터 파일 경로
 current_dir = os.path.dirname(os.path.abspath(__file__))

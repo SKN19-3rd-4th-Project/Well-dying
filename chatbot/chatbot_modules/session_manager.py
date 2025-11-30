@@ -1,8 +1,9 @@
 import os
 import json
 import logging
+import glob
 from datetime import datetime
-from typing import Dict, Any, Optional
+from typing import Dict, Any, List
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -16,7 +17,7 @@ class SessionManager:
         if not os.path.exists(storage_path):
             os.makedirs(storage_path)
             
-        # 다이어리 저장 경로 별도 분리
+        # 다이어리 저장 경로
         self.diary_path = os.path.join(storage_path, "diaries")
         if not os.path.exists(self.diary_path):
             os.makedirs(self.diary_path)
@@ -102,7 +103,6 @@ class SessionManager:
         session = self.load_session(user_id)
         history = session.get("conversation_history", [])
         
-        # 오늘 날짜의 대화만 필터링
         today = datetime.now().strftime("%Y-%m-%d")
         today_history = [
             msg for msg in history 
@@ -118,13 +118,14 @@ class SessionManager:
         return "\n".join(lines) if lines else "오늘 나눈 대화가 없습니다."
 
     # --------------------------------------------------------------------------
-    # 다이어리 로직
+    # [Feature] Diary Management Methods
     # --------------------------------------------------------------------------
     def _get_diary_path(self, user_id: str, date_str: str) -> str:
-        return os.path.join(self.diary_path, f"[{date_str}] {user_id}님의 이야기.txt")
+        # 파일명 예시: user123_2025-11-28.txt
+        return os.path.join(self.diary_path, f"{user_id}_{date_str}.txt")
 
     def get_diary_entry(self, user_id: str, date_str: str) -> str:
-        """해당 날짜의 다이어리 내용 로드"""
+        """해당 날짜의 다이어리 원본 텍스트 로드"""
         path = self._get_diary_path(user_id, date_str)
         if os.path.exists(path):
             with open(path, 'r', encoding='utf-8') as f:
@@ -136,3 +137,60 @@ class SessionManager:
         path = self._get_diary_path(user_id, date_str)
         with open(path, 'w', encoding='utf-8') as f:
             f.write(content)
+
+    def delete_diary_entry(self, user_id: str, date_str: str) -> bool:
+        """
+        [NEW] 다이어리 삭제
+        성공 시 True, 파일이 없어 실패 시 False 반환
+        """
+        path = self._get_diary_path(user_id, date_str)
+        if os.path.exists(path):
+            try:
+                os.remove(path)
+                logger.info(f"다이어리 삭제 완료: {path}")
+                return True
+            except Exception as e:
+                logger.error(f"다이어리 삭제 중 오류: {e}")
+                return False
+        else:
+            logger.warning(f"삭제할 다이어리가 없음: {path}")
+            return False
+
+    def get_all_diaries_metadata(self, user_id: str) -> List[Dict[str, str]]:
+        """캘린더 UI용 메타데이터 추출"""
+        diary_files = glob.glob(os.path.join(self.diary_path, f"{user_id}_*.txt"))
+        metadata_list = []
+
+        for file_path in diary_files:
+            try:
+                filename = os.path.basename(file_path)
+                date_part = filename.replace(f"{user_id}_", "").replace(".txt", "")
+                
+                with open(file_path, 'r', encoding='utf-8') as f:
+                    content = f.read()
+                    lines = content.split('\n')
+                    
+                    first_line = lines[0] if lines else ""
+                    emoji = "📝"
+                    tags = ""
+                    
+                    if "]" in first_line:
+                        parts = first_line.split("]", 1)
+                        meta_part = parts[1].strip()
+                        tokens = meta_part.split()
+                        if tokens:
+                            emoji = tokens[0]
+                            tags = " ".join([t for t in tokens if t.startswith("#")])
+                    
+                    metadata_list.append({
+                        "date": date_part,
+                        "emoji": emoji,
+                        "tags": tags,
+                        "preview": content[:50] + "..."
+                    })
+            except Exception as e:
+                logger.error(f"다이어리 메타데이터 파싱 실패 ({file_path}): {e}")
+                continue
+        
+        metadata_list.sort(key=lambda x: x["date"])
+        return metadata_list

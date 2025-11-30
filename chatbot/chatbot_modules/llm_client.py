@@ -5,6 +5,7 @@ from langchain_openai import ChatOpenAI
 from langchain_core.messages import SystemMessage, HumanMessage
 
 load_dotenv()
+
 api_key = os.getenv("OPENAI_API_KEY")
 model_name = "gpt-4o"
 
